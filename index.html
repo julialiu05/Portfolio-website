@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Julia Liu | Enter</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      overflow: hidden;
+    }
+
+    .game-container {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      height: 600px;
+      margin: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      animation: fadeIn 1s ease;
+    }
+
+    .header h1 {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .header p {
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+
+    /* Room Scene */
+    .room {
+      position: relative;
+      width: 100%;
+      height: 450px;
+      background: linear-gradient(180deg, #2d2d44 0%, #1e1e32 100%);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Floor */
+    .floor {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(180deg, #3d3d5c 0%, #2a2a42 100%);
+    }
+
+    .floor::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Floor pattern */
+    .floor-pattern {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 80px,
+        rgba(255, 255, 255, 0.03) 80px,
+        rgba(255, 255, 255, 0.03) 82px
+      );
+    }
+
+    /* Wall decoration - window */
+    .window {
+      position: absolute;
+      top: 60px;
+      left: 80px;
+      width: 120px;
+      height: 160px;
+      background: linear-gradient(180deg, #4a6fa5 0%, #2d4a6f 100%);
+      border-radius: 12px;
+      border: 8px solid #4a4a6a;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .window::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: #4a4a6a;
+      transform: translateY(-50%);
+    }
+
+    .window::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: #4a4a6a;
+      transform: translateX(-50%);
+    }
+
+    /* Stars in window */
+    .stars {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+
+    .star:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
+    .star:nth-child(2) { top: 40%; left: 70%; animation-delay: 0.5s; }
+    .star:nth-child(3) { top: 60%; left: 30%; animation-delay: 1s; }
+    .star:nth-child(4) { top: 25%; left: 80%; animation-delay: 1.5s; }
+    .star:nth-child(5) { top: 70%; left: 60%; animation-delay: 0.3s; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Bookshelf */
+    .bookshelf {
+      position: absolute;
+      top: 80px;
+      left: 260px;
+      width: 100px;
+      height: 180px;
+      background: linear-gradient(180deg, #5c4a3d 0%, #4a3d32 100%);
+      border-radius: 4px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .shelf {
+      height: 50px;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      border-bottom: 4px solid #3d3228;
+      padding-bottom: 4px;
+    }
+
+    .book {
+      height: 35px;
+      border-radius: 2px;
+      transition: transform 0.2s ease;
+    }
+
+    .book:hover {
+      transform: translateY(-5px);
+    }
+
+    .book:nth-child(1) { width: 12px; background: #e74c3c; height: 38px; }
+    .book:nth-child(2) { width: 10px; background: #3498db; height: 32px; }
+    .book:nth-child(3) { width: 14px; background: #2ecc71; height: 36px; }
+    .book:nth-child(4) { width: 8px; background: #f39c12; height: 30px; }
+    .book:nth-child(5) { width: 12px; background: #9b59b6; height: 34px; }
+
+    /* Plant */
+    .plant {
+      position: absolute;
+      bottom: 120px;
+      left: 420px;
+    }
+
+    .pot {
+      width: 50px;
+      height: 45px;
+      background: linear-gradient(180deg, #c96a4b 0%, #a85539 100%);
+      border-radius: 4px 4px 8px 8px;
+      position: relative;
+    }
+
+    .pot::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -4px;
+      right: -4px;
+      height: 10px;
+      background: #d4785c;
+      border-radius: 4px;
+    }
+
+    .leaves {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .leaf {
+      position: absolute;
+      width: 25px;
+      height: 40px;
+      background: #27ae60;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      transform-origin: bottom center;
+    }
+
+    .leaf:nth-child(1) { transform: rotate(-30deg) translateX(-15px); background: #2ecc71; }
+    .leaf:nth-child(2) { transform: rotate(0deg); background: #27ae60; }
+    .leaf:nth-child(3) { transform: rotate(30deg) translateX(15px); background: #229954; }
+
+    /* THE DOOR - Main interactive element */
+    .door-container {
+      position: absolute;
+      right: 100px;
+      bottom: 120px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .door-container:hover {
+      transform: scale(1.02);
+    }
+
+    .door-frame {
+      width: 140px;
+      height: 220px;
+      background: linear-gradient(180deg, #5c4a3d 0%, #4a3d32 100%);
+      border-radius: 8px 8px 0 0;
+      padding: 8px;
+      position: relative;
+    }
+
+    .door {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, #6eb6ff 0%, #2563eb 50%, #1d4ed8 100%);
+      border-radius: 6px 6px 0 0;
+      position: relative;
+      box-shadow: inset -4px 0 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .door:hover {
+      background: linear-gradient(145deg, #85c4ff 0%, #3b7ff5 50%, #2563eb 100%);
+      box-shadow:
+        inset -4px 0 15px rgba(0, 0, 0, 0.2),
+        0 0 40px rgba(37, 99, 235, 0.5);
+    }
+
+    /* Door panels */
+    .door-panel {
+      position: absolute;
+      left: 15px;
+      right: 15px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .door-panel:nth-child(1) { top: 20px; }
+    .door-panel:nth-child(2) { top: 100px; }
+
+    /* Door handle */
+    .door-handle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 30px;
+      background: linear-gradient(180deg, #ffd700 0%, #f0a500 100%);
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Glow effect */
+    .door-glow {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 60px;
+      background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.4) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .door-container:hover .door-glow {
+      opacity: 1;
+    }
+
+    /* Enter prompt */
+    .enter-prompt {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      color: #1d1d1f;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      opacity: 0;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .enter-prompt::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid rgba(255, 255, 255, 0.95);
+    }
+
+    .door-container:hover .enter-prompt {
+      opacity: 1;
+      top: -60px;
+    }
+
+    /* Character */
+    .character {
+      position: absolute;
+      bottom: 120px;
+      left: 500px;
+      transition: left 0.5s ease;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .character:hover .character-body {
+      transform: scale(1.05);
+    }
+
+    .character-body {
+      width: 50px;
+      height: 70px;
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    /* Head */
+    .head {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(180deg, #ffd5b5 0%, #f5c49c 100%);
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: inset -3px -3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Hair */
+    .hair {
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 25px;
+      background: #2c2c2c;
+      border-radius: 22px 22px 0 0;
+    }
+
+    /* Eyes */
+    .eyes {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .eye {
+      width: 6px;
+      height: 6px;
+      background: #2c2c2c;
+      border-radius: 50%;
+      animation: blink 4s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 45%, 55%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.1); }
+    }
+
+    /* Body */
+    .body {
+      position: absolute;
+      top: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 35px;
+      height: 40px;
+      background: linear-gradient(180deg, #5c7cfa 0%, #4263eb 100%);
+      border-radius: 8px 8px 4px 4px;
+    }
+
+    /* Controls hint */
+    .controls {
+      text-align: center;
+      margin-top: 20px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+      animation: fadeIn 1s ease 0.5s forwards;
+      opacity: 0;
+    }
+
+    .key {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 0 4px;
+      font-family: monospace;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Fade overlay */
+    .fade-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: opacity 0.8s ease;
+    }
+
+    .fade-overlay.active {
+      opacity: 1;
+    }
+
+    /* Door open animation */
+    .door.opening {
+      animation: doorOpen 0.8s ease forwards;
+    }
+
+    @keyframes doorOpen {
+      0% { transform: perspective(500px) rotateY(0); }
+      100% { transform: perspective(500px) rotateY(-85deg); }
+    }
+
+    /* Light burst when door opens */
+    .light-burst {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 0;
+      height: 0;
+      background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      opacity: 0;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .light-burst.active {
+      animation: burst 1s ease forwards;
+    }
+
+    @keyframes burst {
+      0% { width: 0; height: 0; opacity: 1; }
+      100% { width: 200vmax; height: 200vmax; opacity: 1; }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Character walking */
+    .character.walking .body {
+      animation: walk 0.3s ease infinite;
+    }
+
+    @keyframes walk {
+      0%, 100% { transform: translateX(-50%) rotate(-2deg); }
+      50% { transform: translateX(-50%) rotate(2deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .game-container {
+        height: auto;
+      }
+
+      .room {
+        height: 350px;
+      }
+
+      .header h1 {
+        font-size: 1.8rem;
+      }
+
+      .window {
+        width: 80px;
+        height: 100px;
+        top: 40px;
+        left: 30px;
+      }
+
+      .bookshelf {
+        display: none;
+      }
+
+      .plant {
+        left: 200px;
+      }
+
+      .door-container {
+        right: 50px;
+      }
+
+      .door-frame {
+        width: 100px;
+        height: 160px;
+      }
+
+      .character {
+        left: 280px;
+      }
+
+      .controls {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Overlays -->
+  <div class="fade-overlay" id="fadeOverlay"></div>
+  <div class="light-burst" id="lightBurst"></div>
+
+  <div class="game-container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Julia Liu</h1>
+      <p>Welcome to my portfolio</p>
+    </div>
+
+    <!-- Room Scene -->
+    <div class="room" id="room">
+      <!-- Floor -->
+      <div class="floor">
+        <div class="floor-pattern"></div>
+      </div>
+
+      <!-- Window -->
+      <div class="window">
+        <div class="stars">
+          <div class="star"></div>
+          <div class="star"></div>
+          <div class="star"></div>
+          <div class="star"></div>
+          <div class="star"></div>
+        </div>
+      </div>
+
+      <!-- Bookshelf -->
+      <div class="bookshelf">
+        <div class="shelf">
+          <div class="book"></div>
+          <div class="book"></div>
+          <div class="book"></div>
+          <div class="book"></div>
+          <div class="book"></div>
+        </div>
+        <div class="shelf">
+          <div class="book"></div>
+          <div class="book"></div>
+          <div class="book"></div>
+        </div>
+        <div class="shelf">
+          <div class="book"></div>
+          <div class="book"></div>
+          <div class="book"></div>
+          <div class="book"></div>
+        </div>
+      </div>
+
+      <!-- Plant -->
+      <div class="plant">
+        <div class="leaves">
+          <div class="leaf"></div>
+          <div class="leaf"></div>
+          <div class="leaf"></div>
+        </div>
+        <div class="pot"></div>
+      </div>
+
+      <!-- Character -->
+      <div class="character" id="character">
+        <div class="character-body">
+          <div class="hair"></div>
+          <div class="head">
+            <div class="eyes">
+              <div class="eye"></div>
+              <div class="eye"></div>
+            </div>
+          </div>
+          <div class="body"></div>
+        </div>
+      </div>
+
+      <!-- Door -->
+      <div class="door-container" id="doorContainer" onclick="enterPortfolio()">
+        <div class="enter-prompt">Click to Enter</div>
+        <div class="door-frame">
+          <div class="door" id="door">
+            <div class="door-panel"></div>
+            <div class="door-panel"></div>
+            <div class="door-handle"></div>
+          </div>
+        </div>
+        <div class="door-glow"></div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      Use <span class="key">←</span> <span class="key">→</span> arrow keys to move, or click the door to enter
+    </div>
+  </div>
+
+  <script>
+    const character = document.getElementById('character');
+    const door = document.getElementById('door');
+    const doorContainer = document.getElementById('doorContainer');
+    const fadeOverlay = document.getElementById('fadeOverlay');
+    const lightBurst = document.getElementById('lightBurst');
+
+    let characterPos = 500;
+    let isMoving = false;
+    let isEntering = false;
+    const minPos = 100;
+    const maxPos = 600;
+    const doorPos = 650;
+
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+      if (isEntering) return;
+
+      if (e.key === 'ArrowLeft') {
+        characterPos = Math.max(minPos, characterPos - 20);
+        character.style.left = characterPos + 'px';
+        character.classList.add('walking');
+        character.style.transform = 'scaleX(-1)';
+      } else if (e.key === 'ArrowRight') {
+        characterPos = Math.min(maxPos, characterPos + 20);
+        character.style.left = characterPos + 'px';
+        character.classList.add('walking');
+        character.style.transform = 'scaleX(1)';
+
+        // Check if reached door
+        if (characterPos >= doorPos - 100) {
+          enterPortfolio();
+        }
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        character.classList.remove('walking');
+      }
+    });
+
+    // Click character to move toward door
+    character.addEventListener('click', () => {
+      if (isEntering) return;
+      moveTowardDoor();
+    });
+
+    function moveTowardDoor() {
+      character.classList.add('walking');
+      character.style.transform = 'scaleX(1)';
+
+      const interval = setInterval(() => {
+        if (characterPos >= doorPos - 100) {
+          clearInterval(interval);
+          character.classList.remove('walking');
+          enterPortfolio();
+          return;
+        }
+        characterPos += 10;
+        character.style.left = characterPos + 'px';
+      }, 50);
+    }
+
+    function enterPortfolio() {
+      if (isEntering) return;
+      isEntering = true;
+
+      // Open door animation
+      door.classList.add('opening');
+
+      // Light burst effect
+      setTimeout(() => {
+        lightBurst.classList.add('active');
+      }, 400);
+
+      // Navigate to home
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 1200);
+    }
+  </script>
+</body>
+</html>
