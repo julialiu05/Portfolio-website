@@ -1,0 +1,16 @@
+{
+  "name": "julia-llm",
+  "version": "1.0.0",
+  "description": "JuliaLLM - A RAG-powered chatbot using Claude API",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "deploy": "vercel deploy"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>JuliaLLM</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      color: #1a1a1a;
+    }
+
+    /* Header */
+    .header {
+      padding: 20px 20px 0;
+      text-align: center;
+    }
+
+    .header-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: -0.01em;
+    }
+
+    .header-sub {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    /* Chat Container */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Messages Area */
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px;
+      padding-bottom: 90px;
+    }
+
+    /* Welcome */
+    .welcome {
+      text-align: center;
+      padding: 40px 0 24px;
+    }
+
+    .welcome-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+
+    .welcome-sub {
+      font-size: 13px;
+      color: #999;
+      line-height: 1.5;
+    }
+
+    /* Suggestions */
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .suggestion {
+      background: none;
+      border: 1px solid #e0e0e0;
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .suggestion:hover {
+      border-color: #1a1a1a;
+      color: #1a1a1a;
+    }
+
+    /* Message Bubbles */
+    .message {
+      display: flex;
+      margin-bottom: 16px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message.assistant {
+      justify-content: flex-start;
+    }
+
+    .bubble {
+      max-width: 80%;
+      padding: 10px 14px;
+      font-size: 14px;
+      line-height: 1.5;
+      border-radius: 16px;
+    }
+
+    .message.user .bubble {
+      background: #1a1a1a;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.assistant .bubble {
+      background: #f5f5f5;
+      color: #1a1a1a;
+      border-bottom-left-radius: 4px;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 12px;
+    }
+
+    .typing-indicator span {
+      width: 6px;
+      height: 6px;
+      background: #ccc;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+      30% { transform: translateY(-3px); opacity: 1; }
+    }
+
+    /* Input Area */
+    .input-area {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 1px solid #f0f0f0;
+      padding: 12px 16px;
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+
+    .input-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .input-field {
+      flex: 1;
+      background: #f5f5f5;
+      border: 1px solid #e8e8e8;
+      border-radius: 20px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #1a1a1a;
+      resize: none;
+      max-height: 120px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .input-field:focus {
+      border-color: #ccc;
+    }
+
+    .input-field::placeholder {
+      color: #bbb;
+    }
+
+    .send-btn {
+      --bg: #080808;
+      --radius: 50%;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius);
+      background-color: var(--bg);
+      border: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow:
+        inset 0 0.3rem 0.9rem rgba(255, 255, 255, 0.3),
+        inset 0 -0.1rem 0.3rem rgba(0, 0, 0, 0.7),
+        inset 0 -0.4rem 0.9rem rgba(255, 255, 255, 0.5),
+        0 3rem 3rem rgba(0, 0, 0, 0.3),
+        0 1rem 1rem -0.6rem rgba(0, 0, 0, 0.8);
+    }
+
+    .send-btn::before,
+    .send-btn::after {
+      content: "";
+      position: absolute;
+      transition: all 0.3s ease;
+    }
+
+    .send-btn::before {
+      left: -15%;
+      right: -15%;
+      bottom: 25%;
+      top: -100%;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .send-btn::after {
+      left: 6%;
+      right: 6%;
+      top: 12%;
+      bottom: 40%;
+      border-radius: 50%;
+      box-shadow: inset 0 10px 8px -10px rgba(255, 255, 255, 0.8);
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(0, 0, 0, 0) 50%,
+        rgba(0, 0, 0, 0) 100%
+      );
+    }
+
+    .send-btn:hover {
+      box-shadow:
+        inset 0 0.3rem 0.5rem rgba(255, 255, 255, 0.4),
+        inset 0 -0.1rem 0.3rem rgba(0, 0, 0, 0.7),
+        inset 0 -0.4rem 0.9rem rgba(255, 255, 255, 0.7),
+        0 3rem 3rem rgba(0, 0, 0, 0.3),
+        0 1rem 1rem -0.6rem rgba(0, 0, 0, 0.8);
+    }
+
+    .send-btn:hover::before {
+      transform: translateY(-5%);
+    }
+
+    .send-btn:hover::after {
+      opacity: 0.4;
+      transform: translateY(5%);
+    }
+
+    .send-btn:active {
+      transform: translateY(4px);
+      box-shadow:
+        inset 0 0.3rem 0.5rem rgba(255, 255, 255, 0.5),
+        inset 0 -0.1rem 0.3rem rgba(0, 0, 0, 0.8),
+        inset 0 -0.4rem 0.9rem rgba(255, 255, 255, 0.4),
+        0 3rem 3rem rgba(0, 0, 0, 0.3),
+        0 1rem 1rem -0.6rem rgba(0, 0, 0, 0.8);
+    }
+
+    .send-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      box-shadow:
+        inset 0 0.1rem 0.2rem rgba(255, 255, 255, 0.1),
+        inset 0 -0.05rem 0.1rem rgba(0, 0, 0, 0.3),
+        0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
+    }
+
+    .send-btn svg {
+      width: 18px;
+      height: 18px;
+      color: white;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Error Message */
+    .error {
+      background: #fff5f5;
+      color: #c62828;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-title">JuliaLLM</div>
+    <div class="header-sub">Ask me anything</div>
+  </div>
+
+  <div class="chat-container">
+    <div class="messages" id="messages">
+
+      <div class="welcome">
+        <h1 class="welcome-title">Hi, I'm JuliaLLM</h1>
+        <p class="welcome-sub">I can answer questions about Julia's work, skills, and background.</p>
+        <div class="suggestions">
+          <button class="suggestion" onclick="askQuestion('What projects has Julia worked on?')">Projects</button>
+          <button class="suggestion" onclick="askQuestion('What are Julia\'s skills?')">Skills</button>
+          <button class="suggestion" onclick="askQuestion('Tell me about Julia\'s background')">Background</button>
+          <button class="suggestion" onclick="askQuestion('How can I contact Julia?')">Contact</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="input-wrapper">
+      <textarea
+        class="input-field"
+        id="inputField"
+        placeholder="Ask me anything..."
+        rows="1"
+        onkeydown="handleKeydown(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="19" x2="12" y2="5"></line>
+          <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let conversationHistory = [];
+    let isLoading = false;
+
+    function autoResize(textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+    }
+
+    function handleKeydown(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function askQuestion(question) {
+      document.getElementById('inputField').value = question;
+      sendMessage();
+    }
+
+    function addMessage(content, isUser) {
+      var messagesDiv = document.getElementById('messages');
+      var messageDiv = document.createElement('div');
+      messageDiv.className = 'message ' + (isUser ? 'user' : 'assistant');
+
+      if (isUser) {
+        messageDiv.innerHTML = '<div class="bubble">' + escapeHtml(content) + '</div>';
+        messagesDiv.appendChild(messageDiv);
+        scrollToBottom();
+      } else {
+        var bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.textContent = '';
+        messageDiv.appendChild(bubble);
+        messagesDiv.appendChild(messageDiv);
+        scrollToBottom();
+        // Typewriter effect
+        var i = 0;
+        function typeChar() {
+          if (i < content.length) {
+            bubble.textContent += content.charAt(i);
+            i++;
+            scrollToBottom();
+            setTimeout(typeChar, 18);
+          }
+        }
+        typeChar();
+      }
+    }
+
+    function showTyping() {
+      var messagesDiv = document.getElementById('messages');
+      var typingDiv = document.createElement('div');
+      typingDiv.className = 'message assistant';
+      typingDiv.id = 'typingIndicator';
+      typingDiv.innerHTML = '<div class="bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';
+      messagesDiv.appendChild(typingDiv);
+      scrollToBottom();
+    }
+
+    function hideTyping() {
+      var typing = document.getElementById('typingIndicator');
+      if (typing) typing.remove();
+    }
+
+    function scrollToBottom() {
+      var messagesDiv = document.getElementById('messages');
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function showError(message) {
+      var messagesDiv = document.getElementById('messages');
+      var errorDiv = document.createElement('div');
+      errorDiv.className = 'error';
+      errorDiv.textContent = message;
+      messagesDiv.appendChild(errorDiv);
+      scrollToBottom();
+    }
+
+    function generateLocalResponse(query) {
+      var q = query.toLowerCase();
+
+      if (q.match(/skill|good at|know|tools|tech|can you/)) {
+        return "Julia works across Product Design, UX Research, Figma, Prototyping, Design Systems, Creative Coding, and Interaction Design. She bridges design and engineering to make things that actually work and feel good to use.";
+      }
+      if (q.match(/project|work|portfolio|proud|built|made/)) {
+        return "Here's what Julia's been working on:\n\n\u2022 Humanity's Tech Tree \u2014 A collaborative timeline of human technological progress, designed under Richard Socher.\n\u2022 Anthropic \u00d7 Flow \u2014 A VS Code extension and dashboard for Claude Code, shipped on the Marketplace.\n\u2022 FinQuantum \u2014 AI-powered pre-approvals for a mortgage startup.\n\u2022 Worry Jar \u2014 A mindfulness app for managing anxiety, shipped and live.\n\u2022 Reels AI \u2014 AI-powered features for Instagram Reels (concept project).";
+      }
+      if (q.match(/contact|reach|email|hire|open to work|connect/)) {
+        return "Julia is open to opportunities! You can reach her at julia.liu05@berkeley.edu. She'd love to hear about what you're working on.";
+      }
+      if (q.match(/education|school|study|berkeley|degree/)) {
+        return "Julia is at UC Berkeley studying Art, Data Science, and pursuing the Design Certificate. It's a unique combo \u2014 she thinks like an artist, analyzes like a data scientist, and builds like a designer.";
+      }
+      if (q.match(/hobby|interest|free time|fun|outside/)) {
+        return "When she's not designing, Julia's usually baking, solo traveling, or creative coding. The solo trips especially fuel a lot of her creative thinking.";
+      }
+      if (q.match(/who|about|tell me|background|experience|design process/)) {
+        return "Julia is an Interdisciplinary Designer based in the San Francisco Bay Area. She's studying at UC Berkeley \u2014 combining Art, Data Science, and Design. She's passionate about creating meaningful digital experiences that bridge creativity and technology.";
+      }
+      return "I can share more about Julia's projects, skills, background, or how to get in touch \u2014 what are you curious about?";
+    }
+
+    async function sendMessage() {
+      var input = document.getElementById('inputField');
+      var sendBtn = document.getElementById('sendBtn');
+      var message = input.value.trim();
+
+      if (!message || isLoading) return;
+
+      input.value = '';
+      input.style.height = 'auto';
+
+      addMessage(message, true);
+
+      isLoading = true;
+      sendBtn.disabled = true;
+      showTyping();
+
+      try {
+        var response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: message,
+            conversationHistory: conversationHistory
+          })
+        });
+
+        if (!response.ok) throw new Error('Failed to get response');
+
+        var data = await response.json();
+
+        hideTyping();
+        addMessage(data.response, false);
+
+        conversationHistory = [
+          ...conversationHistory,
+          { role: 'user', content: message },
+          { role: 'assistant', content: data.response }
+        ].slice(-10);
+
+      } catch (error) {
+        hideTyping();
+        // Fall back to local responses
+        var localResponse = generateLocalResponse(message);
+        addMessage(localResponse, false);
+        console.log('API unavailable, using local response');
+      } finally {
+        isLoading = false;
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D World Screenshot</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { overflow: hidden; }
+    canvas {
+      filter: saturate(1.55) hue-rotate(-18deg);
+    }
+  </style>
+</head>
+<body>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // ============================================
+    // SCENE SETUP (copied from index.html)
+    // ============================================
+    const scene = new THREE.Scene();
+
+    // Deep saturated blue gradient background
+    const bgCanvas = document.createElement('canvas');
+    bgCanvas.width = 32;
+    bgCanvas.height = 512;
+    const bgCtx = bgCanvas.getContext('2d');
+    const gradient = bgCtx.createLinearGradient(0, 0, 0, 512);
+    gradient.addColorStop(0, '#0A4D5E');    // Deep teal at top
+    gradient.addColorStop(0.3, '#156565');  // Rich dark turquoise
+    gradient.addColorStop(0.6, '#1E8888');  // Vibrant turquoise
+    gradient.addColorStop(1, '#42A5A5');    // Bright turquoise at bottom
+    bgCtx.fillStyle = gradient;
+    bgCtx.fillRect(0, 0, 32, 512);
+    const bgTexture = new THREE.CanvasTexture(bgCanvas);
+    scene.background = bgTexture;
+
+    // Camera
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(15.43, 5.10, 6.13);
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    document.body.appendChild(renderer.domElement);
+
+    // Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.target.set(-0.31, 3.69, 0.45);
+
+    // ============================================
+    // LIGHTING (copied from index.html)
+    // ============================================
+
+    // SOFT AMBIENT
+    const ambientLight = new THREE.AmbientLight(0x404050, 0.4);
+    scene.add(ambientLight);
+
+    // EARTH GLOW
+    const earthGlow = new THREE.PointLight(0x4AA8D8, 4.0, 40);
+    earthGlow.position.set(0, 0, 0);
+    scene.add(earthGlow);
+
+    // UPWARD BLUE
+    const upwardBlue = new THREE.DirectionalLight(0x5BCEFA, 2.5);
+    upwardBlue.position.set(0, -15, 5);
+    scene.add(upwardBlue);
+
+    // AREA LIGHT
+    const areaLight = new THREE.DirectionalLight(0xFFFFFF, 1.5);
+    areaLight.position.set(0, 35, 0);
+    scene.add(areaLight);
+
+    // WARM SUN
+    const warmSun = new THREE.DirectionalLight(0xFFE4B5, 3.0);
+    warmSun.position.set(25, 28, 15);
+    warmSun.castShadow = true;
+    warmSun.shadow.mapSize.set(2048, 2048);
+    warmSun.shadow.camera.near = 1;
+    warmSun.shadow.camera.far = 80;
+    warmSun.shadow.camera.left = -30;
+    warmSun.shadow.camera.right = 30;
+    warmSun.shadow.camera.top = 30;
+    warmSun.shadow.camera.bottom = -30;
+    warmSun.shadow.bias = -0.0001;
+    warmSun.shadow.radius = 5;
+    scene.add(warmSun);
+
+    // VISIBLE SUN
+    const sunGeometry = new THREE.SphereGeometry(3, 32, 32);
+    const sunMaterial = new THREE.MeshBasicMaterial({
+      color: 0xFFDD44,
+      transparent: true,
+      opacity: 0.95
+    });
+    const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
+    sunMesh.position.set(25, 28, 15);
+    scene.add(sunMesh);
+
+    const sunGlow = new THREE.PointLight(0xFFAA33, 5.0, 100);
+    sunGlow.position.set(25, 28, 15);
+    scene.add(sunGlow);
+
+    // LEFT SUN
+    const leftSun = new THREE.DirectionalLight(0xFFE4B5, 2.5);
+    leftSun.position.set(-25, 25, 12);
+    scene.add(leftSun);
+
+    const leftSunGlow = new THREE.PointLight(0xFFAA33, 4.0, 80);
+    leftSunGlow.position.set(-25, 25, 12);
+    scene.add(leftSunGlow);
+
+    // SPOTLIGHTS
+    const spotlight1 = new THREE.SpotLight(0xFFFFFF, 8.0);
+    spotlight1.position.set(15, 5, 6);
+    spotlight1.target.position.set(-8, 5, 8);
+    spotlight1.angle = Math.PI / 16;
+    spotlight1.penumbra = 0.2;
+    spotlight1.decay = 1;
+    scene.add(spotlight1);
+    scene.add(spotlight1.target);
+
+    const spotlight2 = new THREE.SpotLight(0xFFFFFF, 8.0);
+    spotlight2.position.set(15, 5, 6);
+    spotlight2.target.position.set(-12, 6, 4);
+    spotlight2.angle = Math.PI / 16;
+    spotlight2.penumbra = 0.2;
+    spotlight2.decay = 1;
+    scene.add(spotlight2);
+    scene.add(spotlight2.target);
+
+    // PURPLE LIGHT
+    const purpleTreeLight = new THREE.DirectionalLight(0x9932CC, 2.5);
+    purpleTreeLight.position.set(-15, 8, 20);
+    scene.add(purpleTreeLight);
+
+    // COOL LIGHTS - Left Side
+    const coolBlue = new THREE.DirectionalLight(0x4169E1, 1.5);
+    coolBlue.position.set(-20, 15, 10);
+    scene.add(coolBlue);
+
+    const coolCyan = new THREE.DirectionalLight(0x00CED1, 1.2);
+    coolCyan.position.set(-18, 8, 15);
+    scene.add(coolCyan);
+
+    const coolPurple = new THREE.DirectionalLight(0x6A5ACD, 0.8);
+    coolPurple.position.set(-15, 12, -5);
+    scene.add(coolPurple);
+
+    // WHITE LIGHT - Right Side
+    const whiteRight = new THREE.DirectionalLight(0xFFFFFF, 0.8);
+    whiteRight.position.set(18, 10, 12);
+    scene.add(whiteRight);
+
+    // WARM LIGHTS - Top
+    const warmTop1 = new THREE.DirectionalLight(0xFFAA00, 1.2);
+    warmTop1.position.set(5, 30, 5);
+    scene.add(warmTop1);
+
+    const warmTop2 = new THREE.DirectionalLight(0xFF8C00, 1.0);
+    warmTop2.position.set(-5, 28, 10);
+    scene.add(warmTop2);
+
+    const warmTop3 = new THREE.DirectionalLight(0xFFD700, 0.8);
+    warmTop3.position.set(0, 35, -5);
+    scene.add(warmTop3);
+
+    // COOL LIGHTS - Bottom
+    const coolBottom1 = new THREE.DirectionalLight(0x4169E1, 1.2);
+    coolBottom1.position.set(0, -20, 10);
+    scene.add(coolBottom1);
+
+    const coolBottom2 = new THREE.DirectionalLight(0x8A2BE2, 1.0);
+    coolBottom2.position.set(10, -18, 5);
+    scene.add(coolBottom2);
+
+    const coolBottom3 = new THREE.DirectionalLight(0x40E0D0, 1.0);
+    coolBottom3.position.set(-10, -15, 8);
+    scene.add(coolBottom3);
+
+    // CLOUD LIGHTS
+    const cloudLight1 = new THREE.PointLight(0xFFFFFF, 2.5, 25);
+    cloudLight1.position.set(8, 6, 8);
+    scene.add(cloudLight1);
+
+    const cloudLight2 = new THREE.PointLight(0xFFFFFF, 2.5, 25);
+    cloudLight2.position.set(-8, 5, 8);
+    scene.add(cloudLight2);
+
+    const cloudLight3 = new THREE.PointLight(0xFFFFFF, 2.5, 25);
+    cloudLight3.position.set(0, 7, -10);
+    scene.add(cloudLight3);
+
+    const cloudLight4 = new THREE.PointLight(0xFFFAF0, 2.0, 25);
+    cloudLight4.position.set(6, 4, -6);
+    scene.add(cloudLight4);
+
+    // ============================================
+    // LOAD MODEL
+    // ============================================
+    const loader = new GLTFLoader();
+    loader.load('./Final.glb', (gltf) => {
+      const model = gltf.scene;
+
+      // Center the model
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      model.position.sub(center);
+
+      // Enable shadows
+      model.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+
+          // Hide specific planes
+          const n = child.name.toLowerCase();
+          if (n === 'plane.039' || n === 'plane.041' || n === 'plane039' || n === 'plane041') {
+            child.visible = false;
+          }
+
+          // Add lights inside clouds
+          if (n.includes('cloud')) {
+            const cloudPos = new THREE.Vector3();
+            child.getWorldPosition(cloudPos);
+            const innerLight = new THREE.PointLight(0xFFFFFF, 3.0, 8);
+            innerLight.position.copy(cloudPos);
+            scene.add(innerLight);
+          }
+        }
+      });
+
+      scene.add(model);
+      controls.update();
+    });
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Keyboard controls for camera
+    // W/S = up/down, A/D = left/right, Q/E = zoom in/out
+    window.addEventListener('keydown', (e) => {
+      const speed = 0.5;
+      switch(e.key.toLowerCase()) {
+        case 'w': camera.position.y += speed; controls.target.y += speed; break;
+        case 's': camera.position.y -= speed; controls.target.y -= speed; break;
+        case 'a': camera.position.x -= speed; controls.target.x -= speed; break;
+        case 'd': camera.position.x += speed; controls.target.x += speed; break;
+        case 'q': camera.position.lerp(controls.target, 0.1); break;
+        case 'e':
+          const dir = camera.position.clone().sub(controls.target).normalize();
+          camera.position.add(dir.multiplyScalar(0.5));
+          break;
+        case 'p':
+          console.log(`Camera: ${camera.position.x.toFixed(2)}, ${camera.position.y.toFixed(2)}, ${camera.position.z.toFixed(2)}`);
+          break;
+      }
+      controls.update();
+    });
+  </script>
+</body>
+</html>

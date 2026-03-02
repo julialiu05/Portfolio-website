@@ -3,760 +3,1394 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Julia Liu | Enter</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <meta name="description" content="Julia Liu - Interdisciplinary Designer, Artist, and Tinkerer. Portfolio showcasing design projects.">
+  <title>Julia Liu - Portfolio</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🫧</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="imessage-intro.css?v=23">
 
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-      overflow: hidden;
-    }
-
-    .game-container {
-      position: relative;
-      width: 100%;
-      max-width: 900px;
-      height: 600px;
-      margin: 20px;
-    }
-
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      animation: fadeIn 1s ease;
-    }
-
-    .header h1 {
-      color: white;
-      font-size: 2.5rem;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-    }
-
-    .header p {
-      color: rgba(255, 255, 255, 0.5);
-      margin-top: 8px;
-      font-size: 0.95rem;
-    }
-
-    /* Room Scene */
-    .room {
-      position: relative;
-      width: 100%;
-      height: 450px;
-      background: linear-gradient(180deg, #2d2d44 0%, #1e1e32 100%);
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Floor */
-    .floor {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 120px;
-      background: linear-gradient(180deg, #3d3d5c 0%, #2a2a42 100%);
-    }
-
-    .floor::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    /* Floor pattern */
-    .floor-pattern {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 120px;
-      background: repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 80px,
-        rgba(255, 255, 255, 0.03) 80px,
-        rgba(255, 255, 255, 0.03) 82px
-      );
-    }
-
-    /* Wall decoration - window */
-    .window {
-      position: absolute;
-      top: 60px;
-      left: 80px;
-      width: 120px;
-      height: 160px;
-      background: linear-gradient(180deg, #4a6fa5 0%, #2d4a6f 100%);
-      border-radius: 12px;
-      border: 8px solid #4a4a6a;
-      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .window::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      height: 6px;
-      background: #4a4a6a;
-      transform: translateY(-50%);
-    }
-
-    .window::after {
-      content: '';
-      position: absolute;
-      left: 50%;
-      top: 0;
-      bottom: 0;
-      width: 6px;
-      background: #4a4a6a;
-      transform: translateX(-50%);
-    }
-
-    /* Stars in window */
-    .stars {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      bottom: 10px;
-    }
-
-    .star {
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      background: white;
-      border-radius: 50%;
-      animation: twinkle 2s ease-in-out infinite;
-    }
-
-    .star:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
-    .star:nth-child(2) { top: 40%; left: 70%; animation-delay: 0.5s; }
-    .star:nth-child(3) { top: 60%; left: 30%; animation-delay: 1s; }
-    .star:nth-child(4) { top: 25%; left: 80%; animation-delay: 1.5s; }
-    .star:nth-child(5) { top: 70%; left: 60%; animation-delay: 0.3s; }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-
-    /* Bookshelf */
-    .bookshelf {
-      position: absolute;
-      top: 80px;
-      left: 260px;
-      width: 100px;
-      height: 180px;
-      background: linear-gradient(180deg, #5c4a3d 0%, #4a3d32 100%);
-      border-radius: 4px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .shelf {
-      height: 50px;
-      display: flex;
-      align-items: flex-end;
-      gap: 4px;
-      border-bottom: 4px solid #3d3228;
-      padding-bottom: 4px;
-    }
-
-    .book {
-      height: 35px;
-      border-radius: 2px;
-      transition: transform 0.2s ease;
-    }
-
-    .book:hover {
-      transform: translateY(-5px);
-    }
-
-    .book:nth-child(1) { width: 12px; background: #e74c3c; height: 38px; }
-    .book:nth-child(2) { width: 10px; background: #3498db; height: 32px; }
-    .book:nth-child(3) { width: 14px; background: #2ecc71; height: 36px; }
-    .book:nth-child(4) { width: 8px; background: #f39c12; height: 30px; }
-    .book:nth-child(5) { width: 12px; background: #9b59b6; height: 34px; }
-
-    /* Plant */
-    .plant {
-      position: absolute;
-      bottom: 120px;
-      left: 420px;
-    }
-
-    .pot {
-      width: 50px;
-      height: 45px;
-      background: linear-gradient(180deg, #c96a4b 0%, #a85539 100%);
-      border-radius: 4px 4px 8px 8px;
-      position: relative;
-    }
-
-    .pot::before {
-      content: '';
-      position: absolute;
-      top: -5px;
-      left: -4px;
-      right: -4px;
-      height: 10px;
-      background: #d4785c;
-      border-radius: 4px;
-    }
-
-    .leaves {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .leaf {
-      position: absolute;
-      width: 25px;
-      height: 40px;
-      background: #27ae60;
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      transform-origin: bottom center;
-    }
-
-    .leaf:nth-child(1) { transform: rotate(-30deg) translateX(-15px); background: #2ecc71; }
-    .leaf:nth-child(2) { transform: rotate(0deg); background: #27ae60; }
-    .leaf:nth-child(3) { transform: rotate(30deg) translateX(15px); background: #229954; }
-
-    /* THE DOOR - Main interactive element */
-    .door-container {
-      position: absolute;
-      right: 100px;
-      bottom: 120px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .door-container:hover {
-      transform: scale(1.02);
-    }
-
-    .door-frame {
-      width: 140px;
-      height: 220px;
-      background: linear-gradient(180deg, #5c4a3d 0%, #4a3d32 100%);
-      border-radius: 8px 8px 0 0;
-      padding: 8px;
-      position: relative;
-    }
-
-    .door {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(145deg, #6eb6ff 0%, #2563eb 50%, #1d4ed8 100%);
-      border-radius: 6px 6px 0 0;
-      position: relative;
-      box-shadow: inset -4px 0 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-    }
-
-    .door:hover {
-      background: linear-gradient(145deg, #85c4ff 0%, #3b7ff5 50%, #2563eb 100%);
-      box-shadow:
-        inset -4px 0 15px rgba(0, 0, 0, 0.2),
-        0 0 40px rgba(37, 99, 235, 0.5);
-    }
-
-    /* Door panels */
-    .door-panel {
-      position: absolute;
-      left: 15px;
-      right: 15px;
-      height: 60px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-      border: 2px solid rgba(255, 255, 255, 0.15);
-    }
-
-    .door-panel:nth-child(1) { top: 20px; }
-    .door-panel:nth-child(2) { top: 100px; }
-
-    /* Door handle */
-    .door-handle {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 12px;
-      height: 30px;
-      background: linear-gradient(180deg, #ffd700 0%, #f0a500 100%);
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Glow effect */
-    .door-glow {
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 180px;
-      height: 60px;
-      background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.4) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .door-container:hover .door-glow {
-      opacity: 1;
-    }
-
-    /* Enter prompt */
-    .enter-prompt {
-      position: absolute;
-      top: -50px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.95);
-      color: #1d1d1f;
-      padding: 10px 20px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      white-space: nowrap;
-      opacity: 0;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .enter-prompt::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-left: 8px solid transparent;
-      border-right: 8px solid transparent;
-      border-top: 8px solid rgba(255, 255, 255, 0.95);
-    }
-
-    .door-container:hover .enter-prompt {
-      opacity: 1;
-      top: -60px;
-    }
-
-    /* Character */
-    .character {
-      position: absolute;
-      bottom: 120px;
-      left: 500px;
-      transition: left 0.5s ease;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    .character:hover .character-body {
-      transform: scale(1.05);
-    }
-
-    .character-body {
-      width: 50px;
-      height: 70px;
-      position: relative;
-      transition: transform 0.2s ease;
-    }
-
-    /* Head */
-    .head {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(180deg, #ffd5b5 0%, #f5c49c 100%);
-      border-radius: 50%;
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      box-shadow: inset -3px -3px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Hair */
-    .hair {
-      position: absolute;
-      top: -2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 44px;
-      height: 25px;
-      background: #2c2c2c;
-      border-radius: 22px 22px 0 0;
-    }
-
-    /* Eyes */
-    .eyes {
-      position: absolute;
-      top: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 10px;
-    }
-
-    .eye {
-      width: 6px;
-      height: 6px;
-      background: #2c2c2c;
-      border-radius: 50%;
-      animation: blink 4s ease-in-out infinite;
-    }
-
-    @keyframes blink {
-      0%, 45%, 55%, 100% { transform: scaleY(1); }
-      50% { transform: scaleY(0.1); }
-    }
-
-    /* Body */
-    .body {
-      position: absolute;
-      top: 35px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 35px;
-      height: 40px;
-      background: linear-gradient(180deg, #5c7cfa 0%, #4263eb 100%);
-      border-radius: 8px 8px 4px 4px;
-    }
-
-    /* Controls hint */
-    .controls {
-      text-align: center;
-      margin-top: 20px;
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 0.85rem;
-      animation: fadeIn 1s ease 0.5s forwards;
-      opacity: 0;
-    }
-
-    .key {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 6px 12px;
-      border-radius: 6px;
-      margin: 0 4px;
-      font-family: monospace;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    /* Fade overlay */
-    .fade-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: white;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 100;
-      transition: opacity 0.8s ease;
-    }
-
-    .fade-overlay.active {
-      opacity: 1;
-    }
-
-    /* Door open animation */
-    .door.opening {
-      animation: doorOpen 0.8s ease forwards;
-    }
-
-    @keyframes doorOpen {
-      0% { transform: perspective(500px) rotateY(0); }
-      100% { transform: perspective(500px) rotateY(-85deg); }
-    }
-
-    /* Light burst when door opens */
-    .light-burst {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 0;
-      height: 0;
-      background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%);
-      border-radius: 50%;
-      opacity: 0;
-      z-index: 50;
-      pointer-events: none;
-    }
-
-    .light-burst.active {
-      animation: burst 1s ease forwards;
-    }
-
-    @keyframes burst {
-      0% { width: 0; height: 0; opacity: 1; }
-      100% { width: 200vmax; height: 200vmax; opacity: 1; }
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    /* Character walking */
-    .character.walking .body {
-      animation: walk 0.3s ease infinite;
-    }
-
-    @keyframes walk {
-      0%, 100% { transform: translateX(-50%) rotate(-2deg); }
-      50% { transform: translateX(-50%) rotate(2deg); }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .game-container {
-        height: auto;
-      }
-
-      .room {
-        height: 350px;
-      }
-
-      .header h1 {
-        font-size: 1.8rem;
-      }
-
-      .window {
-        width: 80px;
-        height: 100px;
-        top: 40px;
-        left: 30px;
-      }
-
-      .bookshelf {
-        display: none;
-      }
-
-      .plant {
-        left: 200px;
-      }
-
-      .door-container {
-        right: 50px;
-      }
-
-      .door-frame {
-        width: 100px;
-        height: 160px;
-      }
-
-      .character {
-        left: 280px;
-      }
-
-      .controls {
-        font-size: 0.75rem;
-      }
-    }
-  </style>
 </head>
 <body>
-  <!-- Overlays -->
-  <div class="fade-overlay" id="fadeOverlay"></div>
-  <div class="light-burst" id="lightBurst"></div>
-
-  <div class="game-container">
-    <!-- Header -->
-    <div class="header">
-      <h1>Julia Liu</h1>
-      <p>Welcome to my portfolio</p>
-    </div>
-
-    <!-- Room Scene -->
-    <div class="room" id="room">
-      <!-- Floor -->
-      <div class="floor">
-        <div class="floor-pattern"></div>
-      </div>
-
-      <!-- Window -->
-      <div class="window">
-        <div class="stars">
-          <div class="star"></div>
-          <div class="star"></div>
-          <div class="star"></div>
-          <div class="star"></div>
-          <div class="star"></div>
-        </div>
-      </div>
-
-      <!-- Bookshelf -->
-      <div class="bookshelf">
-        <div class="shelf">
-          <div class="book"></div>
-          <div class="book"></div>
-          <div class="book"></div>
-          <div class="book"></div>
-          <div class="book"></div>
-        </div>
-        <div class="shelf">
-          <div class="book"></div>
-          <div class="book"></div>
-          <div class="book"></div>
-        </div>
-        <div class="shelf">
-          <div class="book"></div>
-          <div class="book"></div>
-          <div class="book"></div>
-          <div class="book"></div>
-        </div>
-      </div>
-
-      <!-- Plant -->
-      <div class="plant">
-        <div class="leaves">
-          <div class="leaf"></div>
-          <div class="leaf"></div>
-          <div class="leaf"></div>
-        </div>
-        <div class="pot"></div>
-      </div>
-
-      <!-- Character -->
-      <div class="character" id="character">
-        <div class="character-body">
-          <div class="hair"></div>
-          <div class="head">
-            <div class="eyes">
-              <div class="eye"></div>
-              <div class="eye"></div>
-            </div>
-          </div>
-          <div class="body"></div>
-        </div>
-      </div>
-
-      <!-- Door -->
-      <div class="door-container" id="doorContainer" onclick="enterPortfolio()">
-        <div class="enter-prompt">Click to Enter</div>
-        <div class="door-frame">
-          <div class="door" id="door">
-            <div class="door-panel"></div>
-            <div class="door-panel"></div>
-            <div class="door-handle"></div>
-          </div>
-        </div>
-        <div class="door-glow"></div>
-      </div>
-    </div>
-
-    <!-- Controls -->
-    <div class="controls">
-      Use <span class="key">←</span> <span class="key">→</span> arrow keys to move, or click the door to enter
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loader-wrapper">
+      <div class="loader-emoji-circle">🫧</div>
+      <div class="loader-emoji-circle">✨</div>
+      <div class="loader-emoji-circle">🎨</div>
+      <div class="loader-shadow"></div>
+      <div class="loader-shadow"></div>
+      <div class="loader-shadow"></div>
     </div>
   </div>
 
+  <!-- Skip Navigation -->
+  <a href="#gptProjectsSection" class="skip-link">Skip to main content</a>
+
+
+  <!-- Boot Screen (hidden for ChatGPT style) -->
+  <div class="boot-screen hidden" id="bootScreen" style="display: none !important;">
+    <div class="boot-bubble">
+      <span class="boot-bubble-text">getting in touch</span>
+      <div class="boot-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+    <div class="boot-delivered">Delivered</div>
+  </div>
+
+  <!-- Top Navigation - Fixed at top -->
+  <nav class="top-nav" aria-label="Main navigation">
+    <a href="#gptProjectsSection" onclick="goTo('projects'); return false;">Projects</a>
+    <a href="playground.html">Playground</a>
+    <a href="#about" onclick="goTo('about'); return false;">About</a>
+  </nav>
+
+  <!-- Right Side Navigation - Shows during projects -->
+  <nav class="project-nav" id="projectNav" aria-label="Project navigation">
+    <button class="project-nav-item" data-project="1" aria-label="Project 1: Tech Tree"><div class="project-nav-dot"></div></button>
+    <button class="project-nav-item" data-project="2" aria-label="Project 2: Anthropic x Flow"><div class="project-nav-dot"></div></button>
+    <button class="project-nav-item" data-project="3" aria-label="Project 3: FinQuantum"><div class="project-nav-dot"></div></button>
+    <button class="project-nav-item" data-project="4" aria-label="Project 4: WorryJar"><div class="project-nav-dot"></div></button>
+  </nav>
+
+
+  <!-- Fixed Hero Section (stays in place while you scroll) -->
+  <section class="hero-full-section" id="heroFullSection" data-project="0">
+      <!-- Cursor-following warm gradient glow -->
+      <div class="cursor-glow" id="cursorGlow"></div>
+
+      <!-- Texture overlays -->
+      <div class="noise-overlay"></div>
+      <div class="sketch-lines"></div>
+
+      <!-- Card background (fades in when minimized) -->
+      <div class="hero-card-bg"></div>
+
+      <!-- The scaled wrapper with all hero content -->
+      <div class="scaled-wrapper" id="scaledWrapper">
+  <!-- Warm paper glow spots -->
+  <div class="figma-glow figma-glow-1"></div>
+  <div class="figma-glow figma-glow-2"></div>
+  <div class="figma-glow figma-glow-3"></div>
+
+  <!-- Crosshatch Texture -->
+  <div class="texture-crosshatch"></div>
+
+  <!-- Paper Fibers -->
+  <div class="paper-fibers"></div>
+
+  <!-- Toggle button for floating assets -->
+  <button class="assets-toggle" id="assetsToggle" title="Show decorations">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+      <line x1="12" y1="22.08" x2="12" y2="12"></line>
+    </svg>
+  </button>
+
+  <!-- Floating Decorative Images (hidden by default) -->
+  <div class="floating-assets-container" id="floatingAssets">
+    <div class="floating-decor decor-envelope clickable" data-name="envelope" data-tooltip="Contact" onclick="goTo('contact')" role="button" tabindex="0" aria-label="Contact">
+      <img src="envelope.png" alt="Envelope - Contact">
+    </div>
+  </div>
+
+  <!-- Floating Blue Blobs -->
+  <div class="floating-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+  </div>
+
+  <!-- macOS Menu Bar -->
+  <div class="macos-menubar" id="macosMenubar">
+    <div class="menubar-left">
+      <span class="menubar-apple" aria-hidden="true"></span>
+      <span class="menubar-item"><strong>Finder</strong></span>
+      <span class="menubar-item">File</span>
+      <span class="menubar-item">Edit</span>
+      <span class="menubar-item">View</span>
+      <span class="menubar-item">Go</span>
+      <span class="menubar-item">Window</span>
+      <span class="menubar-item">Help</span>
+    </div>
+    <div class="menubar-right">
+      <span class="menubar-icon">🔋</span>
+      <span class="menubar-icon">📶</span>
+      <span class="menubar-icon">🔍</span>
+      <span class="menubar-time" id="menubarTime">Sat Jan 17 9:41 PM</span>
+    </div>
+  </div>
+
+  <!-- Desktop Icons -->
+  <div class="desktop-icons" id="desktopIcons">
+    <button class="desktop-icon" onclick="window.location.href='#projects'" aria-label="Open Projects folder">
+      <div class="desktop-icon-img" aria-hidden="true">📁</div>
+      <div class="desktop-icon-label">Projects</div>
+    </button>
+  </div>
+
+  <!-- Animated Background (hidden) -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- macOS Dock -->
+  <div class="macos-dock" id="macosDock">
+    <button class="dock-item active" data-name="Messages" onclick="bounceDockItem(this); restoreWindow()" aria-label="Messages - 3 unread"><span aria-hidden="true">💬</span><span class="dock-badge" aria-hidden="true">3</span></button>
+    <button class="dock-item" data-name="Projects" onclick="bounceDockItem(this); window.location.href='portfolio.html'" aria-label="Projects"><span aria-hidden="true">📁</span></button>
+    <button class="dock-item" data-name="Playground" onclick="bounceDockItem(this); window.location.href='playground.html'" aria-label="Playground"><span aria-hidden="true">🎨</span></button>
+    <div class="dock-divider" role="separator"></div>
+    <a class="dock-item" data-name="GitHub" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub (opens in new tab)" onclick="bounceDockItem(this)"><span aria-hidden="true">🐙</span></a>
+    <a class="dock-item" data-name="LinkedIn" href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens in new tab)" onclick="bounceDockItem(this)"><span aria-hidden="true">💼</span></a>
+    <a class="dock-item" data-name="Email" href="mailto:hello@julialiu.design" aria-label="Send email" onclick="bounceDockItem(this)"><span aria-hidden="true">���️</span></a>
+  </div>
+
+  <!-- ========== FLOATING WINDOWS (Desktop only) ========== -->
+
+  <!-- Folder Window - Projects -->
+  <div class="floating-window folder-window" id="folderWindow">
+    <div class="floating-window-header">
+      <div class="floating-window-lights">
+        <div class="floating-window-light red"></div>
+        <div class="floating-window-light yellow"></div>
+        <div class="floating-window-light green"></div>
+      </div>
+      <div class="floating-window-title">Projects</div>
+    </div>
+    <div class="folder-content">
+      <div class="folder-item" onclick="window.location.href='portfolio.html'">
+        <div class="folder-item-icon">📁</div>
+        <div class="folder-item-name">Case Studies</div>
+      </div>
+      <div class="folder-item" onclick="window.location.href='playground.html'">
+        <div class="folder-item-icon">🎨</div>
+        <div class="folder-item-name">Playground</div>
+      </div>
+      <div class="folder-item">
+        <div class="folder-item-icon">✏️</div>
+        <div class="folder-item-name">Sketches</div>
+      </div>
+      <div class="folder-item">
+        <div class="folder-item-icon">📷</div>
+        <div class="folder-item-name">Photos</div>
+      </div>
+      <div class="folder-item">
+        <div class="folder-item-icon">🎵</div>
+        <div class="folder-item-name">Music</div>
+      </div>
+      <div class="folder-item">
+        <div class="folder-item-icon">📝</div>
+        <div class="folder-item-name">Notes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Window - Tic Tac Toe -->
+  <div class="floating-window game-window" id="gameWindow">
+    <div class="floating-window-header">
+      <div class="floating-window-lights">
+        <div class="floating-window-light red"></div>
+        <div class="floating-window-light yellow"></div>
+        <div class="floating-window-light green"></div>
+      </div>
+      <div class="floating-window-title">Tic Tac Toe</div>
+    </div>
+    <div class="game-content">
+      <div class="game-grid" id="gameGrid">
+        <div class="game-cell" data-cell="0"></div>
+        <div class="game-cell" data-cell="1"></div>
+        <div class="game-cell" data-cell="2"></div>
+        <div class="game-cell" data-cell="3"></div>
+        <div class="game-cell" data-cell="4"></div>
+        <div class="game-cell" data-cell="5"></div>
+        <div class="game-cell" data-cell="6"></div>
+        <div class="game-cell" data-cell="7"></div>
+        <div class="game-cell" data-cell="8"></div>
+      </div>
+      <div class="game-status" id="gameStatus">Your turn! (X)</div>
+      <button class="game-reset" onclick="resetGame()">New Game</button>
+    </div>
+  </div>
+
+  <!-- ========== OLD FLOATING MINI WINDOWS (Hidden) ========== -->
+
+  <!-- Finder Window - Projects -->
+  <div class="mini-window finder-window" id="finderWindow">
+    <div class="mini-window-header">
+      <div class="mini-traffic-lights">
+        <div class="mini-traffic-light red"></div>
+        <div class="mini-traffic-light yellow"></div>
+        <div class="mini-traffic-light green"></div>
+      </div>
+      <div class="mini-window-title">Projects</div>
+    </div>
+    <div class="mini-window-content">
+      <div class="finder-item" onclick="window.location.href='portfolio.html'">
+        <span class="finder-icon">📁</span>
+        <div class="finder-info">
+          <div class="finder-name">Case Studies</div>
+          <div class="finder-meta">4 items</div>
+        </div>
+      </div>
+      <div class="finder-item" onclick="window.location.href='portfolio.html'">
+        <span class="finder-icon">🎨</span>
+        <div class="finder-info">
+          <div class="finder-name">Design System</div>
+          <div class="finder-meta">Updated today</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spotify Widget - Now Playing -->
+  <div class="mini-window spotify-window" id="spotifyWindow">
+    <div class="mini-window-header">
+      <div class="mini-traffic-lights">
+        <div class="mini-traffic-light red"></div>
+        <div class="mini-traffic-light yellow"></div>
+        <div class="mini-traffic-light green"></div>
+      </div>
+      <div class="mini-window-title">Now Playing</div>
+    </div>
+    <div class="mini-window-content">
+      <div class="spotify-content">
+        <div class="spotify-album">🎵</div>
+        <div class="spotify-info">
+          <div class="spotify-title">Designing Mode</div>
+          <div class="spotify-artist">Lo-fi Beats</div>
+          <div class="spotify-progress">
+            <div class="spotify-progress-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar Widget -->
+  <div class="mini-window calendar-window" id="calendarWindow">
+    <div class="mini-window-header">
+      <div class="mini-traffic-lights">
+        <div class="mini-traffic-light red"></div>
+        <div class="mini-traffic-light yellow"></div>
+        <div class="mini-traffic-light green"></div>
+      </div>
+      <div class="mini-window-title">Calendar</div>
+    </div>
+    <div class="mini-window-content">
+      <div class="calendar-date">
+        <div class="calendar-day" id="calendarDay">16</div>
+        <div class="calendar-month" id="calendarMonth">January</div>
+        <div class="calendar-weekday" id="calendarWeekday">Thursday</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Safari Window - Case Study Preview -->
+  <div class="mini-window safari-window" id="safariWindow">
+    <div class="mini-window-header">
+      <div class="mini-traffic-lights">
+        <div class="mini-traffic-light red"></div>
+        <div class="mini-traffic-light yellow"></div>
+        <div class="mini-traffic-light green"></div>
+      </div>
+      <div class="mini-window-title">Safari</div>
+    </div>
+    <div class="safari-url-bar">
+      <span class="lock-icon">🔒</span>
+      <span class="safari-url-text">julialiu.design</span>
+    </div>
+    <div class="safari-preview" onclick="window.location.href='portfolio.html'">
+      ✨ Featured Case Study<br>E-commerce Redesign
+    </div>
+  </div>
+
+  <!-- Terminal Window -->
+  <div class="mini-window terminal-window" id="terminalWindow">
+    <div class="mini-window-header" style="background: linear-gradient(145deg, #4A6D91, #2C4A66);">
+      <div class="mini-traffic-lights">
+        <div class="mini-traffic-light red"></div>
+        <div class="mini-traffic-light yellow"></div>
+        <div class="mini-traffic-light green"></div>
+      </div>
+      <div class="mini-window-title" style="color: #fff;">Terminal</div>
+    </div>
+    <div class="terminal-content">
+      <div><span class="terminal-prompt">julia@macbook ~ %</span> <span class="terminal-command">whoami</span></div>
+      <div class="terminal-output">product_designer</div>
+      <div style="margin-top: 8px;"><span class="terminal-prompt">julia@macbook ~ %</span> <span class="terminal-command">cat skills.txt</span></div>
+      <div class="terminal-output">Figma, Prototyping, User Research<br>Design Systems, Interaction Design</div>
+      <div style="margin-top: 8px;"><span class="terminal-prompt">julia@macbook ~ %</span> <span class="cursor-blink"></span></div>
+    </div>
+  </div>
+
+  <!-- Photos Widget -->
+  <div class="mini-window photos-window" id="photosWindow">
+    <div class="mini-window-header">
+      <div class="mini-traffic-lights">
+        <div class="mini-traffic-light red"></div>
+        <div class="mini-traffic-light yellow"></div>
+        <div class="mini-traffic-light green"></div>
+      </div>
+      <div class="mini-window-title">Photos</div>
+    </div>
+    <div class="photos-grid">
+      <div class="photos-item"><div class="photo-placeholder p1">🎨</div></div>
+      <div class="photos-item"><div class="photo-placeholder p2">💡</div></div>
+      <div class="photos-item"><div class="photo-placeholder p3">🚀</div></div>
+      <div class="photos-item"><div class="photo-placeholder p4">✏️</div></div>
+    </div>
+  </div>
+
+  <!-- ========== MOBILE: iPhone (outside scaled-wrapper) ========== -->
+  <div class="phone">
+    <div class="status-bar">
+      <div class="status-left">
+        <span class="status-time" id="mobileTime">9:41</span>
+      </div>
+      <div class="status-right">
+        <div class="signal-bars">
+          <div class="signal-bar"></div>
+          <div class="signal-bar"></div>
+          <div class="signal-bar"></div>
+          <div class="signal-bar"></div>
+        </div>
+        <span class="carrier">5G</span>
+        <span class="wifi-icon">📶</span>
+        <div class="battery">
+          <div class="battery-body">
+            <div class="battery-level"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dynamic-island"></div>
+    <div class="phone-header">
+      <div class="header-top">
+        <div class="contact-avatar">
+          JL
+          <div class="mobile-badge">3</div>
+        </div>
+        <div class="contact-info">
+          <div class="contact-name">Julia Liu</div>
+          <div class="contact-status">Product Designer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="timestamp" id="mobileTimestamp">Today 9:41 AM</div>
+      <div class="bubble received">Hi, I'm Julia 👋</div>
+      <div class="bubble received">I'm an Interdisciplinary Designer ✨</div>
+      <div class="bubble received">Studying Art 🎨, Data Science 📈, and the Design Certificate at UC Berkeley 💙💛</div>
+      <div class="bubble received">In my free time you can find me in my baking era 🍰 and solo traveling 🌍</div>
+      <div class="bubble received">Scroll down to explore my work!</div>
+    </div>
+
+    <div class="scroll-hint" id="mobileScrollHint">
+      <span class="scroll-hint-text">Scroll for project cards</span>
+      <span class="scroll-hint-arrow">↓</span>
+    </div>
+
+    <div class="input-bar" id="mobileInputBar">
+      <input type="text" class="input-field" id="mobileInput" placeholder="iMessage" readonly>
+      <button class="send-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="19" x2="12" y2="5"></line>
+          <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  </div><!-- end scaled-wrapper -->
+
+  <!-- ========== DESKTOP: ChatGPT-Style Interface (Full Screen) ========== -->
+  <div class="desktop-app chatgpt-style" id="desktopApp" style="display: flex !important; opacity: 1 !important; visibility: visible !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 99999 !important;">
+    <!-- Page transition overlay -->
+    <div class="page-transition" id="pageTransition"></div>
+
+    <!-- Left Sidebar -->
+    <div class="gpt-sidebar">
+      <nav class="gpt-sidebar-icons" aria-label="Sidebar navigation">
+        <a class="gpt-sidebar-icon-btn" href="playground.html" title="Playground" aria-label="Playground">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+            <path d="M2 2l7.586 7.586"/>
+            <circle cx="11" cy="11" r="2"/>
+          </svg>
+        </a>
+        <a class="gpt-sidebar-icon-btn" href="#about" onclick="goTo('about'); return false;" title="About" aria-label="About">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
+          </svg>
+        </a>
+        <a class="gpt-sidebar-icon-btn" href="https://github.com/julialiu" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+          </svg>
+        </a>
+        <a class="gpt-sidebar-icon-btn" href="https://linkedin.com/in/julialiu" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/>
+            <circle cx="4" cy="4" r="2"/>
+          </svg>
+        </a>
+        <a class="gpt-sidebar-icon-btn" href="mailto:hello@julialiu.design" title="Email" aria-label="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M22 7l-10 7L2 7"/>
+          </svg>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="gpt-main" role="main" aria-label="AI mode - Main content">
+      <!-- Mobile Header (visible only on small screens) -->
+      <div class="gpt-mobile-header" onclick="toggleLlmSidebar()" style="cursor: pointer;" role="button" tabindex="0" aria-label="Toggle sidebar">
+        <span class="gpt-mobile-brand">JuliaLLM</span>
+      </div>
+
+      <!-- Top Left Model Selector + Dropdown -->
+      <div class="gpt-model-selector-wrap" id="modelSelectorWrap">
+        <button class="gpt-model-selector" id="modelSelectorBtn" aria-label="Menu" aria-expanded="false">
+          <span class="gpt-model-name">JuliaLLM</span>
+          <svg class="gpt-model-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="gpt-model-dropdown" id="modelDropdown">
+        </div>
+      </div>
+
+      <!-- Back to Home button (visible in chat mode) -->
+      <button class="gpt-back-home-btn" id="gptBackHome" onclick="exitChatMode()" aria-label="Back to home">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Contact icons moved to sidebar -->
+
+      <!-- Centered Content — Chat Thread Layout -->
+      <div class="gpt-center">
+        <div class="chat-thread" id="chatThread">
+          <!-- User message: "Hello!" -->
+          <div class="gpt-chat-msg user" id="chatUserHello">
+            <div class="gpt-msg-bubble pearl-btn">Hello!</div>
+          </div>
+
+          <!-- Typing indicator (shown before AI greeting) -->
+          <div class="gpt-chat-typing" id="chatTyping1" style="display:none;">
+            <div class="gpt-typing-dots"><span></span><span></span><span></span></div>
+          </div>
+
+          <!-- AI greeting message -->
+          <div class="gpt-chat-msg assistant" id="chatAiGreeting">
+            <div class="gpt-msg-text" id="greetingText">Hello 👋
+Julia is a designer working between the fields of creative technology, prototyping, and making design accessible to those around her ✨
+She is studying art, data science, and the design certificate @ UC Berkeley 🐻</div>
+          </div>
+
+          <!-- Typing indicator (shown before project cards) -->
+          <div class="gpt-chat-typing" id="chatTyping2" style="display:none;">
+            <div class="gpt-typing-dots"><span></span><span></span><span></span></div>
+          </div>
+
+          <!-- AI message: project cards strip (no avatar — full width) -->
+          <div class="gpt-chat-msg assistant chat-projects-msg" id="chatAiProjects">
+
+        <!-- Project Cards - ChatGPT suggestion style -->
+        <!-- Hover over cards area to expand into horizontal scroll strip -->
+        <div class="gpt-projects" id="gptProjectsSection">
+          <!-- Gradient fade indicators (visible when expanded) -->
+          <div class="gpt-projects-fade gpt-projects-fade-left"></div>
+          <div class="gpt-projects-fade gpt-projects-fade-right"></div>
+
+
+          <!-- Cards row - 4 project previews -->
+          <div class="gpt-cards-row project-preview-cards">
+            <!-- Project 1: Tech Tree -->
+            <a class="gpt-card project-preview-card" data-project="techtree" href="case-study-1.html" role="article" aria-label="Tech Tree - Humanity's collaborative timeline of progress">
+              <div class="card-preview-container">
+                <div class="stacking-window-preview tech-tree-preview tt-neo" style="overflow:hidden;">
+                  <video autoplay loop muted playsinline preload="auto" class="tt-zoom-video tt-small-vid" style="width:100%;height:100%;object-fit:cover;transform-origin:center center;">
+                    <source src="Screen Recording 2026-02-26 at 5.39.45 PM.mp4" type="video/mp4">
+                    <source src="Screen Recording 2026-02-26 at 5.39.45 PM.mov" type="video/quicktime">
+                  </video>
+                  <video autoplay loop muted playsinline preload="auto" class="tt-hover-vid">
+                    <source src="Screen Recording 2026-02-27 at 5.49.40 PM.mp4" type="video/mp4">
+                    <source src="Screen Recording 2026-02-27 at 5.49.40 PM.mov" type="video/quicktime">
+                  </video>
+                </div>
+              </div>
+              <div class="card-preview-footer">
+                <span class="card-preview-title">Tech Tree</span>
+                <span class="card-preview-desc">Humanity's collaborative timeline of progress</span>
+                <div class="card-preview-meta">
+                  <span class="card-preview-year">2025 | Founding Designer</span>
+                </div>
+                <span class="card-preview-cta">View Case Study →</span>
+              </div>
+            </a>
+
+            <!-- Project 2: Anthropic × Flow -->
+            <a class="gpt-card project-preview-card" data-project="claudeflow" href="case-study-5.html" role="article" aria-label="Anthropic x Flow - Helping Claude Code flow">
+              <div class="card-preview-container">
+                <div class="stacking-window-preview claude-flow-banner">
+                  <div class="gradient-animated"></div>
+                  <div class="gradient-bg">
+                    <div class="blob blob-1"></div>
+                    <div class="blob blob-2"></div>
+                    <div class="blob blob-3"></div>
+                    <div class="blob blob-4"></div>
+                    <div class="blob blob-5"></div>
+                  </div>
+                  <div class="noise"></div>
+                  <div class="banner-content">
+                    <div class="cf-logo-wrap">
+                      <img class="claude-logo cf-anthropic" src="anthropic-icon.svg" alt="Anthropic">
+                      <svg class="claude-logo cf-claude" viewBox="0 0 16 16" fill="#D97757" xmlns="http://www.w3.org/2000/svg"><path d="m3.127 10.604 3.135-1.76.053-.153-.053-.085H6.11l-.525-.032-1.791-.048-1.554-.065-1.505-.08-.38-.081L0 7.832l.036-.234.32-.214.455.04 1.009.069 1.513.105 1.097.064 1.626.17h.259l.036-.105-.089-.065-.068-.064-1.566-1.062-1.695-1.121-.887-.646-.48-.327-.243-.306-.104-.67.435-.48.585.04.15.04.593.456 1.267.981 1.654 1.218.242.202.097-.068.012-.049-.109-.181-.9-1.626-.96-1.655-.428-.686-.113-.411a2 2 0 0 1-.068-.484l.496-.674L4.446 0l.662.089.279.242.411.94.666 1.48 1.033 2.014.302.597.162.553.06.17h.105v-.097l.085-1.134.157-1.392.154-1.792.052-.504.25-.605.497-.327.387.186.319.456-.045.294-.19 1.23-.37 1.93-.243 1.29h.142l.161-.16.654-.868 1.097-1.372.484-.545.565-.601.363-.287h.686l.505.751-.226.775-.707.895-.585.759-.839 1.13-.524.904.048.072.125-.012 1.897-.403 1.024-.186 1.223-.21.553.258.06.263-.218.536-1.307.323-1.533.307-2.284.54-.028.02.032.04 1.029.098.44.024h1.077l2.005.15.525.346.315.424-.053.323-.807.411-3.631-.863-.872-.218h-.12v.073l.726.71 1.331 1.202 1.667 1.55.084.383-.214.302-.226-.032-1.464-1.101-.565-.497-1.28-1.077h-.084v.113l.295.432 1.557 2.34.08.718-.112.234-.404.141-.444-.08-.911-1.28-.94-1.44-.759-1.291-.093.053-.448 4.821-.21.246-.484.186-.403-.307-.214-.496.214-.98.258-1.28.21-1.016.19-1.263.112-.42-.008-.028-.092.012-.953 1.307-1.448 1.957-1.146 1.227-.274.109-.477-.247.045-.44.266-.39 1.586-2.018.956-1.25.617-.723-.004-.105h-.036l-4.212 2.736-.75.096-.324-.302.04-.496.154-.162 1.267-.871z"/></svg>
+                    </div>
+                    <span class="claude-wordmark" style="display:none;">Anthropic</span>
+                    <span class="x-mark">×</span>
+                    <span class="flow-text">Flow</span>
+                  </div>
+                </div>
+                <!-- Horizontal scroll preview on hover -->
+                <div class="hover-scroll-preview" style="opacity:0">
+                  <div class="scroll-item">
+                    <img src="Frame!.png" alt="Claude Flow Preview 1">
+                  </div>
+                  <div class="scroll-item">
+                    <img src="Screenshot 2026-02-05 at 1.05.07 PM.png" alt="Claude Flow Preview 2">
+                  </div>
+                  <div class="scroll-item scroll-view-cta">
+                    <span class="scroll-cta-text">View<br>Project</span>
+                    <span class="scroll-cta-arrow">→</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-preview-footer">
+                <span class="card-preview-title">Anthropic × Flow</span>
+                <span class="card-preview-desc">Helping Claude Code flow</span>
+                <div class="card-preview-meta">
+                  <span class="card-preview-year">2026 | Shipped</span>
+                </div>
+                <span class="card-preview-cta">View Case Study →</span>
+              </div>
+            </a>
+
+            <!-- Project 3: FinQuantum -->
+            <a class="gpt-card project-preview-card" data-project="finquantum" href="case-study-3.html" role="article" aria-label="FinQuantum - AI-Powered Pre-Approvals for mortgage startup">
+              <div class="card-preview-container">
+                <div class="stacking-window-preview finquantum-banner">
+                  <div class="banner-content">
+                    <div class="logo-text">FinQuantum</div>
+                    <div class="tagline">AI-Powered Pre-Approvals</div>
+                  </div>
+                </div>
+                <!-- Horizontal scroll preview on hover -->
+                <div class="hover-scroll-preview" style="opacity:0">
+                  <div class="scroll-item">
+                    <span class="scroll-item-text">Dashboard</span>
+                  </div>
+                  <div class="scroll-item">
+                    <span class="scroll-item-text">Analytics</span>
+                  </div>
+                  <div class="scroll-item">
+                    <span class="scroll-item-text">Approvals</span>
+                  </div>
+                  <div class="scroll-item scroll-view-cta">
+                    <span class="scroll-cta-text">View<br>Project</span>
+                    <span class="scroll-cta-arrow">→</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-preview-footer">
+                <span class="card-preview-title">FinQuantum</span>
+                <span class="card-preview-desc">AI-Powered Pre-Approvals for mortgage startup</span>
+                <div class="card-preview-meta">
+                  <span class="card-preview-year">2025 | Internship</span>
+                </div>
+                <span class="card-preview-cta">View Case Study →</span>
+              </div>
+            </a>
+
+            <!-- Project 4: WorryJar -->
+            <a class="gpt-card project-preview-card" data-project="worryjar" href="case-study-4.html" role="article" aria-label="WorryJar - A mindfulness app for managing anxiety">
+              <div class="card-preview-container">
+                <div class="stacking-window-preview p4-preview">
+                  <div class="iphone-mockup">
+                    <div class="iphone-outer">
+                      <div class="iphone-silencer"></div>
+                      <div class="iphone-volume-up"></div>
+                      <div class="iphone-volume-down"></div>
+                      <div class="iphone-power"></div>
+                      <div class="iphone-inner">
+                        <div class="iphone-notch">
+                          <div class="iphone-camera">
+                            <div class="iphone-camera-dot"></div>
+                          </div>
+                          <div class="iphone-speaker"></div>
+                        </div>
+                        <!-- iOS Status Bar -->
+                        <div class="ios-status-bar">
+                          <div class="ios-status-left">
+                            <span class="ios-time">9:41</span>
+                          </div>
+                          <div class="ios-status-right">
+                            <!-- Cellular signal - 4 bars, iOS 17 style -->
+                            <svg class="ios-signal" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                              <rect x="0" y="7" width="3" height="4" rx="0.7" fill="#000"/>
+                              <rect x="4" y="5" width="3" height="6" rx="0.7" fill="#000"/>
+                              <rect x="8" y="2.5" width="3" height="8.5" rx="0.7" fill="#000"/>
+                              <rect x="12" y="0" width="3" height="11" rx="0.7" fill="#000"/>
+                            </svg>
+                            <!-- WiFi - concentric arcs with dot, based on Ionicons iOS style -->
+                            <svg class="ios-wifi" width="16" height="12" viewBox="0 0 16 12" fill="none">
+                              <circle cx="8" cy="10.5" r="1.2" fill="#000"/>
+                              <path d="M5.3 8.2a3.8 3.8 0 015.4 0" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+                              <path d="M2.8 5.5a7.3 7.3 0 0110.4 0" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+                              <path d="M0.5 2.8a10.6 10.6 0 0115 0" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+                            </svg>
+                            <!-- Battery - iOS 17 style with rounded body and cap -->
+                            <svg class="ios-battery" width="25" height="12" viewBox="0 0 25 12" fill="none">
+                              <rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="#000" stroke-width="1"/>
+                              <rect x="2.5" y="2.5" width="17" height="7" rx="1.5" fill="#000"/>
+                              <path d="M23 4v4a2 2 0 000-4z" fill="#000"/>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="iphone-screen">
+                          <video autoplay loop muted playsinline onloadedmetadata="this.playbackRate = 2.0;">
+                            <source src="Screen Recording 2026-02-27 at 4.09.13 AM.mp4" type="video/mp4">
+                            <source src="Screen Recording 2026-02-27 at 4.09.13 AM.mov" type="video/quicktime">
+                          </video>
+                        </div>
+                        <div class="iphone-home-indicator"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Horizontal scroll preview on hover -->
+                <div class="hover-scroll-preview" style="opacity:0">
+                  <div class="scroll-item">
+                    <span class="scroll-item-text">Home</span>
+                  </div>
+                  <div class="scroll-item">
+                    <span class="scroll-item-text">Jar View</span>
+                  </div>
+                  <div class="scroll-item">
+                    <span class="scroll-item-text">Journal</span>
+                  </div>
+                  <div class="scroll-item scroll-view-cta">
+                    <span class="scroll-cta-text">View<br>Project</span>
+                    <span class="scroll-cta-arrow">→</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-preview-footer">
+                <span class="card-preview-title">WorryJar</span>
+                <span class="card-preview-desc">A mindfulness app for managing anxiety</span>
+                <div class="card-preview-meta">
+                  <span class="card-preview-year">2025 | Shipped</span>
+                </div>
+                <span class="card-preview-cta">View Case Study →</span>
+              </div>
+            </a>
+
+            <!-- Project 5: Reels AI -->
+            <a class="gpt-card project-preview-card" data-project="reelsai" href="case-study-6.html" role="article" aria-label="Reels AI - AI-powered features for Instagram Reels">
+              <div class="card-preview-container">
+                <div class="stacking-window-preview reels-ai-preview reels-phones-preview">
+                  <!-- Phase 1: Two phones side by side -->
+                  <div class="reels-phase reels-phase-phones reels-phase-active">
+                    <div class="reels-phone-slot">
+                      <div class="reels-phone-frame"><video autoplay loop muted playsinline><source src="reels-feed-demo.mp4" type="video/mp4"></video></div>
+                    </div>
+                    <div class="reels-phone-slot">
+                      <div class="reels-phone-frame"><video autoplay loop muted playsinline><source src="reels-summary-demo.mp4" type="video/mp4"></video></div>
+                    </div>
+                  </div>
+                  <!-- Phase 2: Instagram logo -->
+                  <div class="reels-phase reels-phase-logo">
+                    <img src="instagram-logo.png" alt="Instagram" class="reels-ig-logo">
+                  </div>
+                  <!-- Keep extra videos for expanded view -->
+                  <div class="reels-phone-slot reels-extra">
+                    <div class="reels-phone-frame"><video autoplay loop muted playsinline><source src="dm-summary-demo.mp4" type="video/mp4"></video></div>
+                  </div>
+                  <div class="reels-phone-slot reels-extra">
+                    <div class="reels-phone-frame"><video autoplay loop muted playsinline><source src="dm-reel-summary-demo.mp4" type="video/mp4"></video></div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-preview-footer">
+                <span class="card-preview-title">Reels AI</span>
+                <span class="card-preview-desc">AI-powered features for Instagram Reels</span>
+                <div class="card-preview-meta">
+                  <span class="card-preview-year">2026 | Concept</span>
+                </div>
+                <span class="card-preview-cta">View Case Study →</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Scroll dot indicators -->
+          <div class="gallery-dots">
+            <button class="gallery-dot active" data-index="0"><span class="gallery-dot-label">Tech Tree</span></button>
+            <button class="gallery-dot" data-index="1"><span class="gallery-dot-label">Anthropic x Flow</span></button>
+            <button class="gallery-dot" data-index="2"><span class="gallery-dot-label">FinQuantum</span></button>
+            <button class="gallery-dot" data-index="3"><span class="gallery-dot-label">WorryJar</span></button>
+            <button class="gallery-dot" data-index="4"><span class="gallery-dot-label">Reels AI</span></button>
+          </div>
+        </div>
+
+
+          <div class="gpt-cards-actions">
+            <a class="gpt-cards-action-btn" href="javascript:void(0)" onclick="activateProjectsFullscreen()" title="View all projects" aria-label="Widen">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 3 21 3 21 9"/>
+                <polyline points="9 21 3 21 3 15"/>
+                <line x1="21" y1="3" x2="14" y2="10"/>
+                <line x1="3" y1="21" x2="10" y2="14"/>
+              </svg>
+            </a>
+            <a class="gpt-cards-action-btn" href="#" title="Systems" aria-label="Systems">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </a>
+          </div>
+          </div><!-- /.gpt-chat-msg.assistant #chatAiProjects -->
+        </div><!-- /.chat-thread -->
+
+        <!-- Input Bar - ChatGPT style -->
+        <div class="gpt-input-container">
+          <div class="gpt-suggestions" id="gptSuggestions">
+            <button class="gpt-suggestion" onclick="useSuggestion(this)">Tell me about your design process</button>
+            <button class="gpt-suggestion" onclick="useSuggestion(this)">What tools and tech do you use?</button>
+            <button class="gpt-suggestion" onclick="useSuggestion(this)">Which project are you most proud of?</button>
+            <button class="gpt-suggestion" onclick="useSuggestion(this)">Are you open to work?</button>
+          </div>
+          <div class="gpt-input-bar">
+            <button class="gpt-plus-btn" onclick="clearChatMessages()" title="New chat">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+            <input type="text" class="gpt-input-field" id="gptMainInput" placeholder="Ask JuliaLLM anything..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendMainMessage();}">
+            <button class="gpt-send-btn" onclick="sendMainMessage()" title="Send" aria-label="Send message">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5"></line>
+                <polyline points="5 12 12 5 19 12"></polyline>
+              </svg>
+            </button>
+          </div>
+          <div class="gpt-input-footer">
+            <span class="gpt-input-model-label">AI hallucinations might be present.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHARED GPT OVERLAY - One sidebar, swappable content -->
+    <div class="shared-gpt-overlay" id="sharedGptOverlay">
+      <!-- Static sidebar -->
+      <div class="card-gpt-sidebar">
+        <div class="card-gpt-sidebar-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6l4 6-4 6-4-6z" fill="currentColor"/>
+          </svg>
+          <span>JuliaLLM</span>
+        </div>
+      </div>
+
+      <!-- Content panels - only one visible at a time -->
+      <div class="card-gpt-main" data-content="techtree">
+        <div class="card-gpt-user-msg">Show me Tech Tree</div>
+        <div class="card-gpt-response">
+          <div class="card-gpt-response-preview hover-preview-tech-tree" style="overflow:hidden;">
+            <video autoplay loop muted playsinline style="width:100%;height:100%;">
+              <source src="Screen Recording 2026-02-27 at 4.19.47 PM.mp4" type="video/mp4">
+              <source src="Screen Recording 2026-02-27 at 4.19.47 PM.mov" type="video/quicktime">
+            </video>
+          </div>
+        </div>
+        <div class="card-gpt-input">
+          <div class="gpt-input-bar">
+            <button class="gpt-plus-btn" title="Add">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+            <input type="text" class="gpt-input-field" placeholder="Ask JuliaLLM anything..." readonly>
+            <button class="gpt-mic-btn" title="Voice">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
+            <button class="gpt-voice-btn" title="Voice mode">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="4" y="10" width="2" height="4" rx="1"/>
+                <rect x="8" y="7" width="2" height="10" rx="1"/>
+                <rect x="12" y="4" width="2" height="16" rx="1"/>
+                <rect x="16" y="7" width="2" height="10" rx="1"/>
+                <rect x="20" y="10" width="2" height="4" rx="1"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-gpt-main" data-content="claudeflow">
+        <div class="card-gpt-user-msg">Show me Anthropic × Flow</div>
+        <div class="card-gpt-response">
+          <div class="card-gpt-response-preview hover-preview-claude-flow">
+            <div class="claude-flow-banner hover-full">
+              <div class="gradient-animated"></div>
+              <div class="gradient-bg">
+                <div class="blob blob-1"></div>
+                <div class="blob blob-2"></div>
+                <div class="blob blob-3"></div>
+                <div class="blob blob-4"></div>
+                <div class="blob blob-5"></div>
+              </div>
+              <div class="noise"></div>
+              <div class="banner-content">
+<img class="claude-logo" src="anthropic-icon.svg" alt="Anthropic">
+                <span class="claude-wordmark" style="display:none;">Anthropic</span>
+                <span class="x-mark">×</span>
+                <span class="flow-text">Flow</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-gpt-input">
+          <div class="gpt-input-bar">
+            <button class="gpt-plus-btn" title="Add">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+            <input type="text" class="gpt-input-field" placeholder="Ask JuliaLLM anything..." readonly>
+            <button class="gpt-mic-btn" title="Voice">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
+            <button class="gpt-voice-btn" title="Voice mode">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="4" y="10" width="2" height="4" rx="1"/>
+                <rect x="8" y="7" width="2" height="10" rx="1"/>
+                <rect x="12" y="4" width="2" height="16" rx="1"/>
+                <rect x="16" y="7" width="2" height="10" rx="1"/>
+                <rect x="20" y="10" width="2" height="4" rx="1"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-gpt-main" data-content="finquantum">
+        <div class="card-gpt-user-msg">Show me FinQuantum</div>
+        <div class="card-gpt-response">
+          <div class="card-gpt-response-preview hover-preview-finquantum">
+            <div class="finquantum-banner hover-full">
+              <div class="banner-content">
+                <div class="logo-text">FinQuantum</div>
+                <div class="tagline">AI-Powered Pre-Approvals</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-gpt-input">
+          <div class="gpt-input-bar">
+            <button class="gpt-plus-btn" title="Add">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+            <input type="text" class="gpt-input-field" placeholder="Ask JuliaLLM anything..." readonly>
+            <button class="gpt-mic-btn" title="Voice">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
+            <button class="gpt-voice-btn" title="Voice mode">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="4" y="10" width="2" height="4" rx="1"/>
+                <rect x="8" y="7" width="2" height="10" rx="1"/>
+                <rect x="12" y="4" width="2" height="16" rx="1"/>
+                <rect x="16" y="7" width="2" height="10" rx="1"/>
+                <rect x="20" y="10" width="2" height="4" rx="1"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-gpt-main" data-content="worryjar">
+        <div class="card-gpt-user-msg">Show me WorryJar</div>
+        <div class="card-gpt-response">
+          <div class="card-gpt-response-preview hover-preview-worryjar">
+            <div class="p4-preview hover-full">
+              <div class="iphone-mockup">
+                <div class="iphone-outer">
+                  <div class="iphone-silencer"></div>
+                  <div class="iphone-volume-up"></div>
+                  <div class="iphone-volume-down"></div>
+                  <div class="iphone-power"></div>
+                  <div class="iphone-inner">
+                    <div class="iphone-notch">
+                      <div class="iphone-camera">
+                        <div class="iphone-camera-dot"></div>
+                      </div>
+                      <div class="iphone-speaker"></div>
+                    </div>
+                    <div class="ios-status-bar">
+                      <div class="ios-status-left">
+                        <span class="ios-time">9:41</span>
+                      </div>
+                      <div class="ios-status-right">
+                        <svg class="ios-signal" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                          <rect x="0" y="7" width="3" height="4" rx="0.7" fill="#000"/>
+                          <rect x="4" y="5" width="3" height="6" rx="0.7" fill="#000"/>
+                          <rect x="8" y="2.5" width="3" height="8.5" rx="0.7" fill="#000"/>
+                          <rect x="12" y="0" width="3" height="11" rx="0.7" fill="#000"/>
+                        </svg>
+                        <svg class="ios-wifi" width="16" height="12" viewBox="0 0 16 12" fill="none">
+                          <circle cx="8" cy="10.5" r="1.2" fill="#000"/>
+                          <path d="M5.3 8.2a3.8 3.8 0 015.4 0" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+                          <path d="M2.8 5.5a7.3 7.3 0 0110.4 0" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+                          <path d="M0.5 2.8a10.6 10.6 0 0115 0" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                        <svg class="ios-battery" width="25" height="12" viewBox="0 0 25 12" fill="none">
+                          <rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="#000" stroke-width="1"/>
+                          <rect x="2.5" y="2.5" width="17" height="7" rx="1.5" fill="#000"/>
+                          <path d="M23 4v4a2 2 0 000-4z" fill="#000"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="iphone-screen">
+                      <video autoplay loop muted playsinline onloadedmetadata="this.playbackRate = 2.0;" aria-label="WorryJar app demo">
+                        <source src="Screen Recording 2026-02-04 at 12.39.23 AM.mp4" type="video/mp4">
+                        <source src="Screen Recording 2026-02-04 at 12.39.23 AM.mov" type="video/quicktime">
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                    <div class="iphone-home-indicator"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-gpt-input">
+          <div class="gpt-input-bar">
+            <button class="gpt-plus-btn" title="Add">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+            <input type="text" class="gpt-input-field" placeholder="Ask JuliaLLM anything..." readonly>
+            <button class="gpt-mic-btn" title="Voice">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
+            <button class="gpt-voice-btn" title="Voice mode">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="4" y="10" width="2" height="4" rx="1"/>
+                <rect x="8" y="7" width="2" height="10" rx="1"/>
+                <rect x="12" y="4" width="2" height="16" rx="1"/>
+                <rect x="16" y="7" width="2" height="10" rx="1"/>
+                <rect x="20" y="10" width="2" height="4" rx="1"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Slides (ChatGPT style) -->
+    <div class="project-slides-container" id="projectSlidesContainer" style="border-radius: 24px !important; border: none !important; box-shadow: 10px 10px 30px rgba(54,89,125,0.3), -6px -6px 14px #FFFFFF, inset 0 2px 1px rgba(255,255,255,0.8), inset 0 -2px 1px rgba(54,89,125,0.1) !important; overflow: hidden !important;">
+      <!-- ChatGPT style header -->
+      <div class="project-slides-header" style="height: 56px; background: linear-gradient(145deg, #FDFDFE, #F3F6FA); border-bottom: none; box-shadow: 0 4px 16px rgba(54,89,125,0.15); display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
+        <button class="gpt-back-btn" onclick="closeProjectSlide()" style="width: 36px; height: 36px; background: linear-gradient(145deg, #FDFDFE, #F3F6FA); border: none; border-radius: 999px; color: #36597D; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 5px 5px 15px rgba(54,89,125,0.3), -4px -4px 8px #FFFFFF, inset 0 1.5px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(54,89,125,0.1);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <span class="project-slides-title" id="projectSlidesTitle" style="font-size: 15px; font-weight: 500; color: #36597D;">Projects</span>
+        <div class="gpt-header-spacer" style="width: 32px;"></div>
+      </div>
+
+      <!-- Project slides area -->
+      <div class="project-slides-area">
+        <!-- Project 1 -->
+        <a class="project-slide" data-project="1" href="case-study-1.html" aria-label="Tech Tree - Humanity's collaborative timeline of progress">
+          <div class="project-slide-content tech-tree-preview" style="overflow:hidden;">
+            <video autoplay loop muted playsinline style="width:100%;height:100%;">
+              <source src="Screen Recording 2026-02-27 at 4.19.47 PM.mp4" type="video/mp4">
+              <source src="Screen Recording 2026-02-27 at 4.19.47 PM.mov" type="video/quicktime">
+            </video>
+          </div>
+          <div class="project-slide-footer">
+            <div class="project-slide-number">01</div>
+            <div class="project-slide-title">Tech Tree</div>
+            <div class="project-slide-subtitle">Humanity's collaborative timeline of progress</div>
+          </div>
+        </a>
+
+        <!-- Project 2 -->
+        <a class="project-slide" data-project="2" href="case-study-5.html" aria-label="Anthropic x Flow - Helping Claude Code flow">
+          <div class="project-slide-content">
+            <div class="claude-flow-banner">
+              <div class="gradient-animated"></div>
+              <div class="gradient-bg">
+                <div class="blob blob-1"></div>
+                <div class="blob blob-2"></div>
+                <div class="blob blob-3"></div>
+                <div class="blob blob-4"></div>
+                <div class="blob blob-5"></div>
+              </div>
+              <div class="noise"></div>
+              <div class="banner-content">
+<img class="claude-logo" src="anthropic-icon.svg" alt="Anthropic">
+                <span class="claude-wordmark" style="display:none;">Anthropic</span>
+                <span class="x-mark">×</span>
+                <span class="flow-text">Flow</span>
+              </div>
+            </div>
+          </div>
+          <div class="project-slide-footer">
+            <div class="project-slide-number">02</div>
+            <div class="project-slide-title">Anthropic × Flow</div>
+            <div class="project-slide-subtitle">Helping Claude Code flow.</div>
+          </div>
+        </a>
+
+        <!-- Project 3 - FinQuantum -->
+        <a class="project-slide" data-project="3" href="case-study-3.html" aria-label="FinQuantum - AI-Powered Pre-Approvals for mortgage startup">
+          <div class="project-slide-content">
+            <div class="finquantum-banner">
+              <div class="banner-content">
+                <div class="logo-text">FinQuantum</div>
+                <div class="tagline">AI-Powered Pre-Approvals</div>
+              </div>
+            </div>
+          </div>
+          <div class="project-slide-footer">
+            <div class="project-slide-number">03</div>
+            <div class="project-slide-title">FinQuantum</div>
+            <div class="project-slide-subtitle">Internship building B2B tools for AI mortgage startup</div>
+          </div>
+        </a>
+
+        <!-- Project 4 -->
+        <a class="project-slide" data-project="4" href="case-study-4.html" aria-label="Project Four">
+          <div class="project-slide-content">
+            <span class="project-slide-placeholder">Project Four Preview</span>
+          </div>
+          <div class="project-slide-footer">
+            <div class="project-slide-number">04</div>
+            <div class="project-slide-title">Project Four</div>
+            <div class="project-slide-subtitle">A brief description of this project</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation (visible only on small screens) -->
+    <nav class="gpt-mobile-nav">
+      <a class="gpt-mobile-nav-item" onclick="scrollToProjects()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="2"/>
+          <rect x="14" y="3" width="7" height="7" rx="2"/>
+          <rect x="3" y="14" width="7" height="7" rx="2"/>
+          <rect x="14" y="14" width="7" height="7" rx="2"/>
+        </svg>
+        <span>Projects</span>
+      </a>
+      <a class="gpt-mobile-nav-item" href="playground.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polygon points="10 8 16 12 10 16 10 8"/>
+        </svg>
+        <span>Playground</span>
+      </a>
+      <a class="gpt-mobile-nav-item" onclick="goTo('about')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
+        </svg>
+        <span>About</span>
+      </a>
+      <button class="gpt-mobile-nav-item" onclick="toggleLlmSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span>Chat</span>
+      </button>
+    </nav>
+  </div>
+
+
+  </section><!-- end hero-full-section -->
+
+  <!-- Projects Section (scrolls over the fixed hero) - COMMENTED OUT -->
+  <!--
+  <div class="projects-page-wrapper" id="projectsSection">
+    <div class="hero-spacer"></div>
+
+    <section class="project-scroll-section" data-project="1">
+      <div class="stacking-window-card" onclick="window.location.href='case-study-1.html'">
+        <div class="stacking-window-titlebar">
+          <button class="gpt-back-btn" onclick="event.stopPropagation(); navigateToSection(0);" style="background: none; border: none; font-size: 20px; color: #36597D; cursor: pointer; padding: 8px 12px; border-radius: 999px;">←</button>
+          <div class="stacking-window-title">Humanity's Tech Tree</div>
+          <div style="width: 44px;"></div>
+        </div>
+        <div class="stacking-window-content">
+          <div class="stacking-window-preview tech-tree-preview" style="overflow:hidden;">
+            <video autoplay loop muted playsinline style="width:100%;height:100%;">
+              <source src="Screen Recording 2026-02-27 at 4.19.47 PM.mp4" type="video/mp4">
+              <source src="Screen Recording 2026-02-27 at 4.19.47 PM.mov" type="video/quicktime">
+            </video>
+          </div>
+          <div class="stacking-window-footer">
+            <div class="stacking-window-number">01</div>
+            <div class="stacking-window-info">
+              <h3>Tech Tree</h3>
+              <p>Humanity's collaborative timeline of progress</p>
+            </div>
+            <div class="stacking-window-arrow">→</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-scroll-section" data-project="2">
+      <div class="stacking-window-card" onclick="window.location.href='case-study-5.html'">
+        <div class="stacking-window-titlebar">
+          <button class="gpt-back-btn" onclick="event.stopPropagation(); navigateToSection(0);" style="background: none; border: none; font-size: 20px; color: #36597D; cursor: pointer; padding: 8px 12px; border-radius: 999px;">←</button>
+          <div class="stacking-window-title">Anthropic × Flow</div>
+          <div style="width: 44px;"></div>
+        </div>
+        <div class="stacking-window-content">
+          <div class="stacking-window-preview claude-flow-banner">
+            <div class="gradient-animated"></div>
+            <div class="gradient-bg">
+              <div class="blob blob-1"></div>
+              <div class="blob blob-2"></div>
+              <div class="blob blob-3"></div>
+              <div class="blob blob-4"></div>
+              <div class="blob blob-5"></div>
+            </div>
+            <div class="noise"></div>
+            <div class="banner-content">
+<img class="claude-logo" src="anthropic-icon.svg" alt="Anthropic">
+              <span class="claude-wordmark" style="display:none;">Anthropic</span>
+              <span class="x-mark">×</span>
+              <span class="flow-text">Flow</span>
+            </div>
+          </div>
+          <div class="stacking-window-footer">
+            <div class="stacking-window-number">02</div>
+            <div class="stacking-window-info">
+              <h3>Anthropic × Flow</h3>
+              <p>Helping Claude Code flow</p>
+            </div>
+            <div class="stacking-window-arrow">→</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-scroll-section" data-project="3">
+      <div class="stacking-window-card" onclick="window.location.href='case-study-3.html'">
+        <div class="stacking-window-titlebar">
+          <button class="gpt-back-btn" onclick="event.stopPropagation(); navigateToSection(0);" style="background: none; border: none; font-size: 20px; color: #36597D; cursor: pointer; padding: 8px 12px; border-radius: 999px;">←</button>
+          <div class="stacking-window-title">FinQuantum</div>
+          <div style="width: 44px;"></div>
+        </div>
+        <div class="stacking-window-content">
+          <div class="stacking-window-preview finquantum-banner">
+            <div class="banner-content">
+              <div class="logo-text">FINQUANTUM</div>
+              <div class="tagline">AI-Powered Pre-Approvals</div>
+            </div>
+          </div>
+          <div class="stacking-window-footer">
+            <div class="stacking-window-number">03</div>
+            <div class="stacking-window-info">
+              <h3>FinQuantum</h3>
+              <p>Internship building B2B tools for AI mortgage startup</p>
+            </div>
+            <div class="stacking-window-arrow">→</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-scroll-section" data-project="4">
+      <div class="stacking-window-card" onclick="window.location.href='case-study-4.html'">
+        <div class="stacking-window-titlebar">
+          <button class="gpt-back-btn" onclick="event.stopPropagation(); navigateToSection(0);" style="background: none; border: none; font-size: 20px; color: #36597D; cursor: pointer; padding: 8px 12px; border-radius: 999px;">←</button>
+          <div class="stacking-window-title">WorryJar</div>
+          <div style="width: 44px;"></div>
+        </div>
+        <div class="stacking-window-content">
+          <div class="stacking-window-preview p4-preview">
+            <div class="iphone-mockup">
+              <div class="iphone-outer">
+                <div class="iphone-silencer"></div>
+                <div class="iphone-volume-up"></div>
+                <div class="iphone-volume-down"></div>
+                <div class="iphone-power"></div>
+                <div class="iphone-inner">
+                  <div class="iphone-notch">
+                    <div class="iphone-camera">
+                      <div class="iphone-camera-dot"></div>
+                    </div>
+                    <div class="iphone-speaker"></div>
+                  </div>
+                  <div class="ios-status-bar">
+                    <div class="ios-status-left">
+                      <span class="ios-time">9:41</span>
+                    </div>
+                    <div class="ios-status-right">
+                      <svg class="ios-signal" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                        <rect x="0" y="7" width="3" height="4" rx="0.7" fill="#000"/>
+                        <rect x="4" y="5" width="3" height="6" rx="0.7" fill="#000"/>
+                        <rect x="8" y="2.5" width="3" height="8.5" rx="0.7" fill="#000"/>
+                        <rect x="12" y="0" width="3" height="11" rx="0.7" fill="#000"/>
+                      </svg>
+                      <svg class="ios-wifi" width="16" height="12" viewBox="0 0 16 12" fill="none">
+                        <circle cx="8" cy="10.5" r="1.2" fill="#000"/>
+                        <path d="M5.3 8.2a3.8 3.8 0 015.4 0" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+                        <path d="M2.8 5.5a7.3 7.3 0 0110.4 0" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+                        <path d="M0.5 2.8a10.6 10.6 0 0115 0" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+                      </svg>
+                      <svg class="ios-battery" width="25" height="12" viewBox="0 0 25 12" fill="none">
+                        <rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="#000" stroke-width="1"/>
+                        <rect x="2.5" y="2.5" width="17" height="7" rx="1.5" fill="#000"/>
+                        <path d="M23 4v4a2 2 0 000-4z" fill="#000"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="iphone-screen">
+                    <video autoplay loop muted playsinline onloadedmetadata="this.playbackRate = 2.0;">
+                      <source src="Screen Recording 2026-02-27 at 4.09.13 AM.mp4" type="video/mp4">
+                      <source src="Screen Recording 2026-02-27 at 4.09.13 AM.mov" type="video/quicktime">
+                    </video>
+                  </div>
+                  <div class="iphone-home-indicator"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="stacking-window-footer">
+            <div class="stacking-window-number">04</div>
+            <div class="stacking-window-info">
+              <h3>WorryJar</h3>
+              <p>A mindfulness app for managing anxiety</p>
+            </div>
+            <div class="stacking-window-arrow">→</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  -->
+  <!-- end projects-page-wrapper (COMMENTED OUT) -->
+
+  <!-- macOS-style Menu Bar -->
+  <nav class="macos-nav-bar" id="macosNavBar">
+    <div class="macos-nav-left">
+      <span class="macos-nav-item brand" onclick="navigateToSection(0)" style="cursor: pointer;">Julia Liu</span>
+    </div>
+    <div class="macos-nav-right">
+      <a class="macos-nav-item" onclick="scrollToProjects()">Projects</a>
+      <a class="macos-nav-item" href="playground.html">Playground</a>
+      <a class="macos-nav-item" onclick="goTo('about')">About</a>
+    </div>
+  </nav>
+
+  <!-- Hero Name Card (placed outside all sections for proper z-index) -->
+  <div class="name-card-window" id="nameCardWindow">
+    <div class="name-card-titlebar">
+      <div class="name-card-buttons">
+        <div class="name-card-btn close"></div>
+        <div class="name-card-btn minimize"></div>
+        <div class="name-card-btn maximize"></div>
+      </div>
+    </div>
+    <div class="name-card-content">
+      <h1 class="name-card-name">Julia Liu</h1>
+      <p class="name-card-title">Product Designer</p>
+    </div>
+  </div>
+
+  <script src="imessage-intro.js?v=14"></script>
   <script>
-    const character = document.getElementById('character');
-    const door = document.getElementById('door');
-    const doorContainer = document.getElementById('doorContainer');
-    const fadeOverlay = document.getElementById('fadeOverlay');
-    const lightBurst = document.getElementById('lightBurst');
+    // Chat thread entrance animation is handled in imessage-intro.js
 
-    let characterPos = 500;
-    let isMoving = false;
-    let isEntering = false;
-    const minPos = 100;
-    const maxPos = 600;
-    const doorPos = 650;
-
-    // Keyboard controls
-    document.addEventListener('keydown', (e) => {
-      if (isEntering) return;
-
-      if (e.key === 'ArrowLeft') {
-        characterPos = Math.max(minPos, characterPos - 20);
-        character.style.left = characterPos + 'px';
-        character.classList.add('walking');
-        character.style.transform = 'scaleX(-1)';
-      } else if (e.key === 'ArrowRight') {
-        characterPos = Math.min(maxPos, characterPos + 20);
-        character.style.left = characterPos + 'px';
-        character.classList.add('walking');
-        character.style.transform = 'scaleX(1)';
-
-        // Check if reached door
-        if (characterPos >= doorPos - 100) {
-          enterPortfolio();
+    // Reels AI card — fade between phones and logo
+    (function() {
+      var phases = document.querySelectorAll('.reels-phones-preview .reels-phase');
+      if (phases.length < 2) return;
+      var current = 0;
+      setInterval(function() {
+        phases[current].classList.remove('reels-phase-active');
+        current = (current + 1) % phases.length;
+        phases[current].classList.add('reels-phase-active');
+      }, 3500);
+      // Keep videos playing
+      document.querySelectorAll('.reels-phones-preview video').forEach(function(v) {
+        v.play().catch(function(){});
+        v.addEventListener('pause', function() { v.play().catch(function(){}); });
+      });
+      document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+          document.querySelectorAll('.reels-phones-preview video').forEach(function(v) { v.play().catch(function(){}); });
         }
-      }
-    });
-
-    document.addEventListener('keyup', (e) => {
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        character.classList.remove('walking');
-      }
-    });
-
-    // Click character to move toward door
-    character.addEventListener('click', () => {
-      if (isEntering) return;
-      moveTowardDoor();
-    });
-
-    function moveTowardDoor() {
-      character.classList.add('walking');
-      character.style.transform = 'scaleX(1)';
-
-      const interval = setInterval(() => {
-        if (characterPos >= doorPos - 100) {
-          clearInterval(interval);
-          character.classList.remove('walking');
-          enterPortfolio();
-          return;
-        }
-        characterPos += 10;
-        character.style.left = characterPos + 'px';
-      }, 50);
-    }
-
-    function enterPortfolio() {
-      if (isEntering) return;
-      isEntering = true;
-
-      // Open door animation
-      door.classList.add('opening');
-
-      // Light burst effect
-      setTimeout(() => {
-        lightBurst.classList.add('active');
-      }, 400);
-
-      // Navigate to home
-      setTimeout(() => {
-        window.location.href = 'home.html';
-      }, 1200);
-    }
+      });
+    })();
   </script>
 </body>
 </html>
+

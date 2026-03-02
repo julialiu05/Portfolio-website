@@ -1,0 +1,560 @@
+/* ========== HUMAN MODE - Scrapbook/Journal ========== */
+
+/* --- Base Container --- */
+.human-mode {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 99999;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #2E6CC5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  scroll-behavior: smooth;
+}
+
+.human-mode.active {
+  display: flex;
+}
+
+/* --- Persistent Mode Toggle (visible in both modes) --- */
+.mode-toggle {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100002;
+  display: flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px;
+  gap: 0;
+  animation: toggleFadeIn 0.5s ease 0.3s both;
+}
+
+@keyframes toggleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Sliding indicator behind active button */
+.mode-toggle-slider {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: calc(50% - 6px);
+  height: calc(100% - 12px);
+  border-radius: 999px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+/* When AI is active, slider moves to right */
+.mode-toggle.ai-active .mode-toggle-slider {
+  transform: translateX(100%);
+}
+
+/* Toggle buttons */
+.mode-toggle-btn {
+  position: relative;
+  z-index: 1;
+  padding: 10px 26px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-family: "Manrope", "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.25s ease;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  flex: 1;
+  text-align: center;
+}
+
+/* --- Human Mode active variant (light switch, top-right) --- */
+.mode-toggle.human-active {
+  left: auto;
+  right: 24px;
+  top: 24px;
+  transform: none;
+  flex-direction: column;
+  background: #F0EDE8;
+  border-radius: 12px;
+  padding: 6px;
+  width: 56px;
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  animation: none;
+}
+
+.mode-toggle.human-active .mode-toggle-slider {
+  width: calc(100% - 12px);
+  height: calc(50% - 6px);
+  top: 6px;
+  left: 6px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Slider moves down for AI */
+.mode-toggle.human-active.ai-active .mode-toggle-slider {
+  transform: translateY(100%);
+}
+
+.mode-toggle.human-active .mode-toggle-btn {
+  padding: 10px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.25);
+  text-shadow: none;
+  flex: 1;
+  text-align: center;
+}
+
+.mode-toggle.human-active .mode-toggle-btn.active {
+  color: #1a1a1a;
+  text-shadow: none;
+}
+
+/* --- AI Mode active variant (raised neomorphic to match buttons) --- */
+.mode-toggle.ai-active {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.mode-toggle.ai-active .mode-toggle-slider {
+  background-color: #080808;
+  box-shadow:
+    inset 0 0.2rem 0.6rem rgba(255, 255, 255, 0.3),
+    inset 0 -0.05rem 0.2rem rgba(0, 0, 0, 0.7),
+    inset 0 -0.25rem 0.6rem rgba(255, 255, 255, 0.5),
+    0 1.5rem 1.5rem rgba(0, 0, 0, 0.3),
+    0 0.5rem 0.5rem -0.3rem rgba(0, 0, 0, 0.8);
+}
+
+.mode-toggle.ai-active .mode-toggle-btn {
+  color: rgba(42, 42, 42, 0.35);
+}
+
+.mode-toggle.ai-active .mode-toggle-btn.active {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ==============================================
+   NOTEBOOK DESIGN SYSTEM
+
+   Image: 1280 × 832px
+
+   Page zones (% of image):
+   ┌──────────────────────────────────────────┐
+   │  blue bg                                 │
+   │  ┌─────────────┬──┬─────────────┐        │
+   │  │  LEFT PAGE   │░░│  RIGHT PAGE  │       │
+   │  │              │░░│              │       │
+   │  │  L: 10.5%    │░░│  L: 52.5%   │       │
+   │  │  R: 47.5%    │░░│  R: 89.5%   │       │
+   │  │  T: 12%      │░░│  T: 12%     │       │
+   │  │  B: 88%      │░░│  B: 88%     │       │
+   │  │              │░░│              │       │
+   │  └─────────────┴──┴─────────────┘        │
+   │                 ░░ = spiral (47.5–52.5%)  │
+   └──────────────────────────────────────────┘
+
+   Inner content padding: 2% extra on each side
+   ============================================== */
+
+/* --- Unified Notebook --- */
+.notebook-wrapper {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 60px 40px 40px;
+  box-sizing: border-box;
+}
+
+.notebook-spread {
+  position: relative;
+  width: 100%;
+  max-width: min(90vw, 140vh);
+}
+
+.notebook-bg {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Notebook pages — absolutely positioned over the bg image */
+.notebook-page {
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+
+.notebook-page.active {
+  display: block;
+}
+
+/* Hero page — fills both pages */
+.notebook-page-hero {
+  position: absolute;
+  top: 12%;
+  bottom: 12%;
+  left: 10.5%;
+  right: 10.5%;
+  overflow: hidden;
+  border-radius: 2px;
+  display: none;
+}
+
+.notebook-page-hero.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notebook-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Project pages — two absolutely positioned page zones */
+.notebook-page-project {
+  /* children are absolutely positioned */
+}
+
+/* Left page zone — text content */
+.notebook-left-page {
+  position: absolute;
+  top: 14%;
+  bottom: 14%;
+  left: 12.5%;
+  right: 54%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+/* Right page zone — preview */
+.notebook-right-page {
+  position: absolute;
+  top: 14%;
+  bottom: 14%;
+  left: 54.5%;
+  right: 12.5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Left page typography — sized to fit ~35% width zone */
+.notebook-project-number {
+  font-family: 'SF Mono', 'Monaco', monospace;
+  font-size: clamp(8px, 1.2vw, 12px);
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.05em;
+}
+
+.notebook-project-title {
+  font-family: 'Caveat', 'Segoe Print', cursive, sans-serif;
+  font-size: clamp(18px, 3.2vw, 34px);
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.notebook-project-desc {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: clamp(9px, 1.3vw, 13px);
+  color: rgba(0, 0, 0, 0.45);
+  margin: 2px 0 0;
+  line-height: 1.35;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.notebook-project-tag {
+  font-size: clamp(7px, 1vw, 10px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.notebook-project-tag.shipped {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+}
+
+.notebook-project-tag.concept {
+  background: rgba(139, 92, 246, 0.15);
+  color: #7C3AED;
+}
+
+.notebook-project-link {
+  font-size: clamp(9px, 1.2vw, 12px);
+  font-weight: 600;
+  color: #2E6CC5;
+  text-decoration: none;
+  margin-top: 4px;
+  transition: opacity 0.2s ease;
+}
+
+.notebook-project-link:hover {
+  opacity: 0.7;
+}
+
+/* Right page preview — fills the zone */
+.notebook-preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notebook-preview video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Preview backgrounds */
+.nb-preview-techtree { background: linear-gradient(135deg, #0a0f1a, #0d1520); }
+.nb-preview-claudeflow { background: linear-gradient(145deg, #F8FAFC, #EDF1F7); }
+.nb-preview-finquantum { background: linear-gradient(145deg, #1E293B, #2C4A66, #36597D); }
+.nb-preview-worryjar { background: url('AdobeStock_1236165127.jpeg') center/cover; }
+.nb-preview-reelsai { background: linear-gradient(145deg, #833AB4, #FD1D1D, #F77737); }
+
+.nb-cf-text {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 18px;
+  color: #1E293B;
+}
+.nb-cf-x { font-size: 13px; color: rgba(30,41,59,0.4); margin: 0 4px; }
+
+.nb-fq-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #F3F6FA;
+  letter-spacing: 0.06em;
+}
+
+.nb-wj-emoji, .nb-ra-emoji {
+  font-size: 36px;
+}
+
+/* Navigation arrows */
+.notebook-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background-color: #080808;
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow:
+    inset 0 0.15rem 0.4rem rgba(255, 255, 255, 0.3),
+    inset 0 -0.05rem 0.15rem rgba(0, 0, 0, 0.7),
+    inset 0 -0.2rem 0.4rem rgba(255, 255, 255, 0.5),
+    0 0.8rem 1rem rgba(0, 0, 0, 0.3),
+    0 0.3rem 0.5rem -0.2rem rgba(0, 0, 0, 0.8);
+}
+
+.notebook-nav:hover {
+  transform: translateY(-50%) scale(1.08);
+  box-shadow:
+    inset 0 0.15rem 0.3rem rgba(255, 255, 255, 0.4),
+    inset 0 -0.05rem 0.15rem rgba(0, 0, 0, 0.7),
+    inset 0 -0.2rem 0.4rem rgba(255, 255, 255, 0.7),
+    0 0.8rem 1rem rgba(0, 0, 0, 0.3),
+    0 0.3rem 0.5rem -0.2rem rgba(0, 0, 0, 0.8);
+}
+
+.notebook-prev { left: 8px; }
+.notebook-next { right: 8px; }
+
+/* Page counter */
+.notebook-page-count {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.4);
+  font-family: 'SF Mono', monospace;
+}
+
+/* Washi tape decoration - hidden */
+.washi-tape {
+  display: none;
+}
+
+.washi-green {
+  background: repeating-linear-gradient(45deg, #a8e6cf, #a8e6cf 4px, #88d8b0 4px, #88d8b0 8px);
+  top: -8px; left: 20%;
+  transform: rotate(2deg);
+}
+
+.washi-orange {
+  background: repeating-linear-gradient(45deg, #ffd3b6, #ffd3b6 4px, #ffaaa5 4px, #ffaaa5 8px);
+  top: -8px; right: 15%;
+  transform: rotate(-3deg);
+}
+
+.washi-pink {
+  background: repeating-linear-gradient(45deg, #f8c8dc, #f8c8dc 4px, #f4a7c1 4px, #f4a7c1 8px);
+  top: -6px; left: 30%;
+  transform: rotate(4deg);
+}
+
+.washi-purple {
+  background: repeating-linear-gradient(45deg, #d4b8e8, #d4b8e8 4px, #c8a0e0 4px, #c8a0e0 8px);
+  top: -8px; right: 20%;
+  transform: rotate(-2deg);
+}
+
+/* --- Transition Overlay --- */
+.mode-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200000;
+  pointer-events: none;
+  opacity: 0;
+  background: #fff;
+}
+
+.mode-transition-overlay.active {
+  animation: modeTransition 0.6s ease forwards;
+}
+
+@keyframes modeTransition {
+  0%   { opacity: 0; }
+  35%  { opacity: 1; }
+  65%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .notebook-wrapper {
+    padding: 60px 12px 30px;
+  }
+
+  .notebook-nav {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+
+  .notebook-prev { left: 2px; }
+  .notebook-next { right: 2px; }
+}
+
+@media (max-width: 768px) {
+  .mode-toggle {
+    top: 14px;
+  }
+
+  .mode-toggle-btn {
+    padding: 7px 18px;
+    font-size: 13px;
+  }
+
+  .mode-toggle.human-active {
+    right: 16px;
+    top: 16px;
+    width: 50px;
+  }
+
+  .mode-toggle.human-active .mode-toggle-btn {
+    padding: 8px 0;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mode-toggle {
+    top: 12px;
+  }
+
+  .mode-toggle-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  .mode-toggle.human-active {
+    right: 14px;
+    top: 14px;
+    width: 46px;
+  }
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .scrapbook-card,
+  .scrapbook-card:hover,
+  .mode-toggle,
+  .mode-toggle-slider,
+  .mode-transition-overlay {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .scrapbook-card:nth-child(n) {
+    transform: none !important;
+  }
+}

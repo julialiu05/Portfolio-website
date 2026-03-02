@@ -1,0 +1,8 @@
+timestamp,name,age_group,background,experience_rating,understood_homepage,explore_without_instructions,difficulty_node_types,wanted_back_reset,visual_cues_helpful,would_recommend,describe_experience,additional_feedback
+2025-07-24 19:40:10,Steve Yang,Over 40,Engineer,7,Yes,Yes,No,Unclear,Yes,Yes,Not bad,No
+2025-07-24 19:45:20,Wendy Ma,Over 40,Middle age career woman ,8,Yes,Yes,No,No,Yes,Yes,Interesting tool to understand the knowledge origins and relationships. ,Probably it is helpful to have the inf. box moving along with the selected item.
+2025-07-24 21:12:54,Katie ou,Over 40,"I’m a freelance food and health planner, helping people improve their diet and lifestyle.",8,Yes,Unclear,No,Yes,Unclear,Maybe,,
+2025-07-25 08:43:08,Hannah Yu,Over 40,,1,Yes,No,No,No,Yes,Maybe,,No
+2025-07-25 09:18:44,John Guo,31-40,"Biostatistician working on Parkinson's Disease research, AI enthusiast ",3,Yes,No,Yes,No,No,No,"Great idea, has a lot of potential, needs a lot of work.",Steam engine overlapping with vaccination - two quite unrelated concepts. This will quickly become unmanageable as number of nodes grow. I'd suggest you check out the technology tree in the computer game Civilization.
+2025-07-26 16:36:02,LIN LI,Over 40,Homemaker ,9,Yes,Yes,No,No,Yes,Yes,Good way to understand the progress of technology ,No
+2025-07-30 05:54:56,Eileen Zeng,Over 40,Research Scientist ,10,Yes,Yes,No,No,Yes,Yes,技术树导航很直观，一目了然。,Not really

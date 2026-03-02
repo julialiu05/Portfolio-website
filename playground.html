@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖌️</text></svg>">
+  <title>Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --figma-bg-dark:      #2c2c2c;
+      --figma-bg-darker:    #1e1e1e;
+      --figma-bg-hover:     #383838;
+      --figma-canvas:       #f5f5f5;
+      --figma-accent:       #0c8ce9;
+      --figma-text-primary: #e0e0e0;
+      --figma-text-secondary: #999;
+      --figma-border:       #444;
+      --figma-frame-border: #b3b3b3;
+      --sidebar-width:      240px;
+      --topbar-height:      48px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      background: var(--figma-canvas);
+      color: #1d1d1f;
+      min-height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Top Bar ── */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--topbar-height);
+      background: var(--figma-bg-dark);
+      border-bottom: 1px solid var(--figma-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      z-index: 200;
+      gap: 8px;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .topbar-back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      color: var(--figma-text-secondary);
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+
+    .topbar-back:hover {
+      background: var(--figma-bg-hover);
+      color: var(--figma-text-primary);
+    }
+
+    .topbar-back svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--figma-border);
+      flex-shrink: 0;
+    }
+
+    .topbar-filename {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--figma-text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .topbar-filename span {
+      color: var(--figma-text-secondary);
+      font-weight: 400;
+    }
+
+    /* Top bar center — tools */
+    .topbar-center {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--figma-bg-darker);
+      border-radius: 6px;
+      padding: 3px;
+      flex-shrink: 0;
+    }
+
+    .tool-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.12s, color 0.12s;
+      color: var(--figma-text-secondary);
+    }
+
+    .tool-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .tool-btn:hover {
+      background: var(--figma-bg-hover);
+      color: var(--figma-text-primary);
+    }
+
+    .tool-btn.active {
+      background: var(--figma-accent);
+      color: #fff;
+    }
+
+    .toolbar-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--figma-border);
+      margin: 0 2px;
+    }
+
+    .color-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.12s, border-color 0.12s;
+      margin: 0 1px;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.15);
+    }
+
+    .color-btn.active {
+      border-color: var(--figma-text-primary);
+    }
+
+    .clear-btn {
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--figma-text-secondary);
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .clear-btn:hover {
+      background: rgba(255, 45, 85, 0.2);
+      color: #ff4e30;
+    }
+
+    /* Top bar right */
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .topbar-status {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--figma-text-secondary);
+      padding: 4px 10px;
+      background: var(--figma-bg-darker);
+      border-radius: 4px;
+    }
+
+    /* ── Left Sidebar — Layers ── */
+    .sidebar {
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      background: var(--figma-bg-dark);
+      border-right: 1px solid var(--figma-border);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .sidebar.collapsed {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--figma-border);
+      flex-shrink: 0;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--figma-text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-toggle {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--figma-text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .sidebar-toggle:hover {
+      background: var(--figma-bg-hover);
+      color: var(--figma-text-primary);
+    }
+
+    .sidebar-toggle svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .layers-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+
+    .layers-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .layers-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .layers-list::-webkit-scrollbar-thumb {
+      background: var(--figma-border);
+      border-radius: 2px;
+    }
+
+    .layer-group-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--figma-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 12px 4px;
+    }
+
+    .layer-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.1s;
+      color: var(--figma-text-primary);
+      font-size: 11px;
+      font-weight: 400;
+      border-left: 2px solid transparent;
+    }
+
+    .layer-item:hover {
+      background: var(--figma-bg-hover);
+    }
+
+    .layer-item.active {
+      background: rgba(12, 140, 233, 0.15);
+      border-left-color: var(--figma-accent);
+      color: var(--figma-accent);
+    }
+
+    .layer-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    .layer-item.active .layer-icon {
+      opacity: 1;
+    }
+
+    /* ── Canvas Area ── */
+    .canvas-area {
+      position: fixed;
+      top: var(--topbar-height);
+      left: var(--sidebar-width);
+      right: 0;
+      bottom: 0;
+      background: var(--figma-canvas);
+      overflow: hidden;
+      cursor: grab;
+      transition: left 0.25s ease;
+    }
+
+    body.sidebar-collapsed .canvas-area {
+      left: 0;
+    }
+
+    .canvas-area.dragging {
+      cursor: grabbing;
+    }
+
+    .canvas-area.drawing {
+      cursor: crosshair;
+    }
+
+    /* Grid pattern */
+    .canvas-grid {
+      position: absolute;
+      width: 3200px;
+      height: 2400px;
+      top: 0;
+      left: 0;
+      background-image: radial-gradient(circle, #d4d4d4 0.8px, transparent 0.8px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    /* Drawing Canvas */
+    #drawingCanvas {
+      position: absolute;
+      width: 3200px;
+      height: 2400px;
+      top: 0;
+      left: 0;
+      z-index: 5;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    #drawingCanvas.active {
+      pointer-events: auto;
+    }
+
+    /* Cards Container */
+    .cards-container {
+      position: absolute;
+      width: 3200px;
+      height: 2400px;
+      top: 0;
+      left: 0;
+      will-change: transform;
+    }
+
+    /* ── Cards / Frames — Figma Style ── */
+    .card {
+      position: absolute;
+      width: 240px;
+      cursor: default;
+    }
+
+    .card-tall {
+      width: 200px;
+    }
+
+    .card-tall .card-preview {
+      height: 280px;
+    }
+
+    .card-wide {
+      width: 320px;
+    }
+
+    .card-wide .card-preview {
+      height: 200px;
+    }
+
+    .frame-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--figma-frame-border);
+      margin-bottom: 6px;
+      padding-left: 2px;
+      transition: color 0.15s;
+    }
+
+    .card:hover .frame-label {
+      color: var(--figma-accent);
+    }
+
+    .card-content {
+      background: #fff;
+      border-radius: 2px;
+      overflow: hidden;
+      border: 1px solid var(--figma-frame-border);
+      transition: border-color 0.15s;
+    }
+
+    .card:hover .card-content {
+      border-color: var(--figma-accent);
+    }
+
+    .card-preview {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #f5f5f7;
+    }
+
+    .card-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-preview-icon {
+      font-size: 64px;
+    }
+
+    .card-tall .card-preview-icon {
+      font-size: 80px;
+    }
+
+    .card-wide .card-preview-icon {
+      font-size: 72px;
+    }
+
+    .card-info {
+      padding: 10px 12px;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+
+    .card-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: #999;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1d1d1f;
+    }
+
+    .card-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    .card-tool {
+      padding: 2px 6px;
+      background: #f5f5f5;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 500;
+      color: #888;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ── Instruction Frame ── */
+    .instruction-frame {
+      position: absolute;
+      top: 880px;
+      left: 1440px;
+      width: 320px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .instruction-frame-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--figma-frame-border);
+      margin-bottom: 6px;
+      padding-left: 2px;
+      text-align: left;
+      transition: color 0.15s;
+    }
+
+    .instruction-frame:hover .instruction-frame-label {
+      color: var(--figma-accent);
+    }
+
+    .instruction-content {
+      background: #fff;
+      border-radius: 2px;
+      padding: 32px 28px;
+      border: 1px solid var(--figma-frame-border);
+      transition: border-color 0.15s;
+    }
+
+    .instruction-frame:hover .instruction-content {
+      border-color: var(--figma-accent);
+    }
+
+    .instruction-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1d1d1f;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .instruction-text {
+      font-size: 13px;
+      color: #6e6e73;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .instruction-hints {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .instruction-hint {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #999;
+      font-weight: 500;
+    }
+
+    .instruction-hint svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.5;
+    }
+
+    /* Card positions — scattered, verified no overlap (80px+ gap) */
+    #card-1  { top: 260px;  left: 820px;  }   /* wide  820-1140, 260-540   */
+    #card-2  { top: 220px;  left: 1920px; }   /* wide  1920-2240, 220-500  */
+    #card-3  { top: 180px;  left: 420px;  }   /* tall  420-620, 180-540    */
+    #card-4  { top: 260px;  left: 2480px; }   /* tall  2480-2680, 260-620  */
+    #card-5  { top: 720px;  left: 2380px; }   /* tall  2380-2580, 720-1080 */
+    #card-6  { top: 660px;  left: 300px;  }   /* tall  300-500, 660-1020   */
+    #card-7  { top: 680px;  left: 700px;  }   /* wide  700-1020, 680-960   */
+    #card-8  { top: 1120px; left: 840px;  }   /* wide  840-1160, 1120-1400 */
+    #card-9  { top: 700px;  left: 1140px; }   /* tall  1140-1340, 700-1060 */
+    #card-10 { top: 640px;  left: 1960px; }   /* tall  1960-2160, 640-1000 */
+    #card-11 { top: 1140px; left: 440px;  }   /* tall  440-640, 1140-1500  */
+    #card-12 { top: 300px;  left: 1380px; }   /* wide  1380-1700, 300-580  */
+    #card-13 { top: 1160px; left: 1380px; }   /* std   1380-1620, 1160-1400 */
+    #card-14 { top: 1120px; left: 1840px; }   /* std   1840-2080, 1120-1360 */
+    #card-15 { top: 1160px; left: 2300px; }   /* wide  2300-2620, 1160-1440 */
+    #card-16 { top: 460px;  left: 2780px; }   /* wide  2780-3100, 460-740  */
+
+    /* ── Zoom Controls ── */
+    .zoom-controls {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--figma-bg-dark);
+      border-radius: 6px;
+      border: 1px solid var(--figma-border);
+      z-index: 200;
+      overflow: hidden;
+    }
+
+    .zoom-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      color: var(--figma-text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.1s, color 0.1s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .zoom-btn:hover {
+      background: var(--figma-bg-hover);
+      color: var(--figma-text-primary);
+    }
+
+    .zoom-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .zoom-level {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--figma-text-primary);
+      min-width: 44px;
+      text-align: center;
+      padding: 0 4px;
+      cursor: default;
+      user-select: none;
+    }
+
+    .zoom-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--figma-border);
+    }
+
+    /* ── Hint Toast ── */
+    .hint {
+      position: fixed;
+      bottom: 60px;
+      right: 16px;
+      background: var(--figma-bg-dark);
+      color: var(--figma-text-primary);
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--figma-border);
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+
+    .hint.visible {
+      opacity: 1;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1200px) {
+      .card { width: 200px; }
+      .card-tall { width: 170px; }
+      .card-wide { width: 280px; }
+      .card-preview { height: 140px; }
+      .card-tall .card-preview { height: 240px; }
+      .card-wide .card-preview { height: 170px; }
+      .card-preview-icon { font-size: 40px; }
+      .card-tall .card-preview-icon { font-size: 56px; }
+      .card-tools { gap: 3px; margin-top: 6px; }
+      .card-tool { padding: 2px 5px; font-size: 9px; }
+
+      .instruction-frame { width: 280px; left: 1360px; }
+      .instruction-content { padding: 24px 20px; }
+      .instruction-title { font-size: 18px; }
+      .instruction-text { font-size: 12px; }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --sidebar-width: 0px;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        opacity: 0;
+        pointer-events: none;
+        width: 240px;
+      }
+
+      .sidebar.mobile-open {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 300;
+      }
+
+      .canvas-area {
+        left: 0 !important;
+      }
+
+      .topbar-filename span,
+      .topbar-status {
+        display: none;
+      }
+
+      .topbar-filename {
+        font-size: 12px;
+      }
+
+      .tool-btn {
+        width: 28px;
+        height: 28px;
+      }
+
+      .tool-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .color-btn {
+        width: 16px;
+        height: 16px;
+      }
+
+      .clear-btn {
+        font-size: 10px;
+        padding: 3px 8px;
+      }
+
+      .card, .card-tall, .card-wide { width: 170px; }
+      .card-preview, .card-tall .card-preview, .card-wide .card-preview { height: 120px; }
+      .card-preview-icon, .card-tall .card-preview-icon, .card-wide .card-preview-icon { font-size: 36px; }
+      .card-info { padding: 8px 10px; }
+      .card-title { font-size: 12px; }
+      .card-label { font-size: 9px; }
+      .frame-label { font-size: 9px; }
+      .card-tools { gap: 2px; margin-top: 4px; }
+      .card-tool { padding: 2px 4px; font-size: 8px; }
+
+      .instruction-frame {
+        width: 240px;
+        left: 1400px;
+        top: 80px;
+      }
+      .instruction-content { padding: 20px 16px; }
+      .instruction-title { font-size: 16px; }
+      .instruction-text { font-size: 11px; margin-bottom: 14px; }
+      .instruction-hints { gap: 10px; }
+      .instruction-hint { font-size: 10px; }
+      .instruction-hint svg { width: 12px; height: 12px; }
+
+      #card-1  { top: 200px;  left: 1400px; }
+      #card-2  { top: 420px;  left: 1400px; }
+      #card-3  { top: 640px;  left: 1400px; }
+      #card-4  { top: 860px;  left: 1400px; }
+      #card-5  { top: 1080px; left: 1400px; }
+      #card-6  { top: 1300px; left: 1400px; }
+      #card-7  { top: 1520px; left: 1400px; }
+      #card-8  { top: 1740px; left: 1400px; }
+      #card-9  { top: 1960px; left: 1400px; }
+      #card-10 { top: 2180px; left: 1400px; }
+      #card-11 { top: 2400px; left: 1400px; }
+      #card-12 { top: 2620px; left: 1400px; }
+      #card-13 { top: 2840px; left: 1400px; }
+      #card-14 { top: 3060px; left: 1400px; }
+      #card-15 { top: 3280px; left: 1400px; }
+      #card-16 { top: 3500px; left: 1400px; }
+
+      .zoom-controls {
+        bottom: 12px;
+        right: 12px;
+      }
+
+      .hint {
+        bottom: 52px;
+        right: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <a href="index.html" class="topbar-back" title="Back to portfolio">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </a>
+      <div class="topbar-divider"></div>
+      <div class="topbar-filename">Playground <span>— Julia Liu</span></div>
+    </div>
+
+    <div class="topbar-center">
+      <button class="tool-btn active" id="handTool" title="Hand tool (H)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/>
+          <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/>
+          <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>
+          <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+        </svg>
+      </button>
+      <button class="tool-btn" id="penTool" title="Pen tool (P)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+          <path d="m15 5 4 4"/>
+        </svg>
+      </button>
+
+      <div class="toolbar-sep"></div>
+
+      <button class="color-btn active" style="background: #FF9500;" data-color="#FF9500" title="Orange"></button>
+      <button class="color-btn" style="background: #0c8ce9;" data-color="#0c8ce9" title="Blue"></button>
+      <button class="color-btn" style="background: #FF2D55;" data-color="#FF2D55" title="Pink"></button>
+      <button class="color-btn" style="background: #1d1d1f;" data-color="#1d1d1f" title="Black"></button>
+
+      <div class="toolbar-sep"></div>
+
+      <button class="clear-btn" id="clearBtn" title="Clear drawing">Clear</button>
+    </div>
+
+    <div class="topbar-right">
+      <span class="topbar-status">Playground</span>
+    </div>
+  </div>
+
+  <!-- Left Sidebar — Layers -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Layers</span>
+      <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar (\)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="11 17 6 12 11 7"></polyline>
+          <polyline points="18 17 13 12 18 7"></polyline>
+        </svg>
+      </button>
+    </div>
+    <div class="layers-list" id="layersList">
+      <div class="layer-group-label">Frames</div>
+
+      <div class="layer-item" data-target="card-1">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Interactive World
+      </div>
+      <div class="layer-item" data-target="card-2">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        iMessage Portfolio
+      </div>
+      <div class="layer-item" data-target="card-3">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Ukraine Poster 1
+      </div>
+      <div class="layer-item" data-target="card-4">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Ukraine Poster 2
+      </div>
+      <div class="layer-item" data-target="card-5">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Mother & Baby
+      </div>
+      <div class="layer-item" data-target="card-6">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Portrait Study
+      </div>
+      <div class="layer-item" data-target="card-7">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Landscapes
+      </div>
+      <div class="layer-item" data-target="card-8">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Nature
+      </div>
+      <div class="layer-item" data-target="card-9">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Travel Moments
+      </div>
+      <div class="layer-item" data-target="card-10">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Street Life
+      </div>
+      <div class="layer-item" data-target="card-11">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Golden Hour
+      </div>
+      <div class="layer-item" data-target="card-12">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Digital Painting
+      </div>
+      <div class="layer-item" data-target="card-13">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Prismacolor Drawing
+      </div>
+      <div class="layer-item" data-target="card-14">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Oil Painting
+      </div>
+      <div class="layer-item" data-target="card-15">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        JuliaLLM
+      </div>
+      <div class="layer-item" data-target="card-16">
+        <svg class="layer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        Photobooth
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas Area -->
+  <div class="canvas-area" id="canvasArea">
+    <div class="canvas-grid" id="canvasGrid"></div>
+    <canvas id="drawingCanvas"></canvas>
+
+    <div class="cards-container" id="cardsContainer">
+      <!-- Instruction Frame -->
+      <div class="instruction-frame">
+        <div class="instruction-frame-label">Welcome</div>
+        <div class="instruction-content">
+          <h2 class="instruction-title">Welcome to the Playground</h2>
+          <p class="instruction-text">A collection of side projects, experiments, and creative explorations. Feel free to look around!</p>
+          <div class="instruction-hints">
+            <span class="instruction-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/>
+                <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/>
+                <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>
+                <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+              </svg>
+              Drag to explore
+            </span>
+            <span class="instruction-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                <path d="m15 5 4 4"/>
+              </svg>
+              Draw anywhere
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <article class="card card-wide" id="card-1">
+        <div class="frame-label">Interactive World</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="Screenshot 2026-01-05 at 1.47.45 AM.png" alt="3D World" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">3D Experience</span>
+            <h3 class="card-title">Interactive World</h3>
+            <div class="card-tools"><span class="card-tool">Blender</span><span class="card-tool">Three.js</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-wide" id="card-2">
+        <div class="frame-label">iMessage Portfolio</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="Screenshot 2026-02-05 at 1.05.07 PM.png" alt="iMessage Portfolio" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">UI Design</span>
+            <h3 class="card-title">iMessage Portfolio</h3>
+            <div class="card-tools"><span class="card-tool">Figma</span><span class="card-tool">HTML/CSS</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-tall" id="card-3">
+        <div class="frame-label">Ukraine Poster</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="UkrainePoster.jpg" alt="Ukraine Poster" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Research Project</span>
+            <h3 class="card-title">Ukraine Posters</h3>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-tall" id="card-4">
+        <div class="frame-label">Ukraine Series</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="Ukraineposter2.jpg" alt="Ukraine Poster 2" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Research Project</span>
+            <h3 class="card-title">Ukraine Series</h3>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-tall" id="card-5">
+        <div class="frame-label">Mother & Baby</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="mother baby.jpg" alt="Mother and Baby" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Fine Art</span>
+            <h3 class="card-title">Mother & Baby</h3>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-tall" id="card-6">
+        <div class="frame-label">Portrait Study</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="portrait finallll.jpg" alt="Portrait" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Digital Art</span>
+            <h3 class="card-title">Portrait Study</h3>
+            <div class="card-tools"><span class="card-tool">Photoshop</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-wide" id="card-7">
+        <div class="frame-label">Landscapes</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="DSCF1471.JPG" alt="Landscape" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Photography</span>
+            <h3 class="card-title">Landscapes</h3>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-wide" id="card-8">
+        <div class="frame-label">Nature</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="DSCF1478.JPG" alt="Nature" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Photography</span>
+            <h3 class="card-title">Nature</h3>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-tall" id="card-9">
+        <div class="frame-label">Travel Moments</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="DSCF0273.jpg" alt="Travel" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Photography</span>
+            <h3 class="card-title">Travel Moments</h3>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-tall" id="card-10">
+        <div class="frame-label">Street Life</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="DSCF0178.jpg" alt="Street" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Photography</span>
+            <h3 class="card-title">Street Life</h3>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-tall" id="card-11">
+        <div class="frame-label">Golden Hour</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="DSCF0060.jpg" alt="Golden Hour" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Photography</span>
+            <h3 class="card-title">Golden Hour</h3>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-wide" id="card-12">
+        <div class="frame-label">Digital Painting</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="personal project Julia.png" alt="Digital Painting" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Digital Art</span>
+            <h3 class="card-title">Digital Painting</h3>
+            <div class="card-tools"><span class="card-tool">Photoshop</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="card-13">
+        <div class="frame-label">Prismacolor Drawing</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="IMG-1503.jpg" alt="Prismacolor Drawing" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Fine Art</span>
+            <h3 class="card-title">Prismacolor Drawing</h3>
+            <div class="card-tools"><span class="card-tool">Prismacolor Pencil</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="card-14">
+        <div class="frame-label">Oil Painting</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="IMG_2206.jpeg" alt="Oil Painting" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Fine Art</span>
+            <h3 class="card-title">Oil Painting</h3>
+            <div class="card-tools"><span class="card-tool">Oil on Canvas</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-wide" id="card-15">
+        <div class="frame-label">JuliaLLM</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="juliallm-screenshot.png" alt="JuliaLLM" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">AI / Portfolio</span>
+            <h3 class="card-title">JuliaLLM</h3>
+            <div class="card-tools"><span class="card-tool">RAG</span><span class="card-tool">LLM</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card card-wide" id="card-16">
+        <div class="frame-label">Photobooth</div>
+        <div class="card-content">
+          <div class="card-preview"><img src="photobooth-screenshot.png" alt="Creative Fair Photobooth" loading="lazy"></div>
+          <div class="card-info">
+            <span class="card-label">Interactive Web App</span>
+            <h3 class="card-title">Creative Fair Photobooth</h3>
+            <div class="card-tools"><span class="card-tool">Camera API</span><span class="card-tool">Stickers</span><span class="card-tool">HTML/CSS/JS</span></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- Zoom Controls -->
+  <div class="zoom-controls">
+    <button class="zoom-btn" id="zoomOut" title="Zoom out (Ctrl -)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </button>
+    <div class="zoom-sep"></div>
+    <span class="zoom-level" id="zoomLevel">100%</span>
+    <div class="zoom-sep"></div>
+    <button class="zoom-btn" id="zoomIn" title="Zoom in (Ctrl +)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </button>
+    <div class="zoom-sep"></div>
+    <button class="zoom-btn" id="zoomFit" title="Fit to view (Ctrl 0)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
+        <path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
+        <path d="M3 16v3a2 2 0 0 0 2 2h3"/>
+        <path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Hint -->
+  <div class="hint" id="hint"></div>
+
+  <script>
+    const canvasArea = document.getElementById('canvasArea');
+    const canvasGrid = document.getElementById('canvasGrid');
+    const cardsContainer = document.getElementById('cardsContainer');
+    const drawingCanvas = document.getElementById('drawingCanvas');
+    const ctx = drawingCanvas.getContext('2d');
+    const hint = document.getElementById('hint');
+    const sidebar = document.getElementById('sidebar');
+
+    let currentTool = 'hand';
+    let strokeColor = '#FF9500';
+    let lineWidth = 4;
+
+    let isPanning = false;
+    let panStartX = 0, panStartY = 0;
+    let offsetX = 0, offsetY = 0;
+    let scale = 1;
+
+    let isDrawing = false;
+    let lastX = 0, lastY = 0;
+
+    const MIN_ZOOM = 0.25;
+    const MAX_ZOOM = 2;
+    const ZOOM_STEP = 0.1;
+    const CANVAS_CENTER_X = 1500;
+    const CANVAS_CENTER_Y = 900;
+    const TOPBAR_H = 48;
+    const SIDEBAR_W = 240;
+
+    // Fixed canvas size
+    drawingCanvas.width = 3200;
+    drawingCanvas.height = 2400;
+
+    function getSidebarWidth() {
+      if (window.innerWidth <= 768) return 0;
+      return sidebar.classList.contains('collapsed') ? 0 : SIDEBAR_W;
+    }
+
+    function getViewport() {
+      return {
+        w: window.innerWidth - getSidebarWidth(),
+        h: window.innerHeight - TOPBAR_H
+      };
+    }
+
+    function recenter() {
+      const vp = getViewport();
+      offsetX = vp.w / 2 - CANVAS_CENTER_X * scale;
+      offsetY = vp.h / 2 - CANVAS_CENTER_Y * scale;
+      updateTransform();
+    }
+
+    // Initial center
+    offsetX = (window.innerWidth - getSidebarWidth()) / 2 - CANVAS_CENTER_X;
+    offsetY = (window.innerHeight - TOPBAR_H) / 2 - CANVAS_CENTER_Y;
+
+    requestAnimationFrame(function() { updateTransform(); });
+    window.addEventListener('resize', recenter);
+
+    let rafPending = false;
+    function updateTransform() {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(() => {
+        const transform = `translate3d(${offsetX}px, ${offsetY}px, 0) scale(${scale})`;
+        canvasGrid.style.transform = transform;
+        canvasGrid.style.transformOrigin = '0 0';
+        cardsContainer.style.transform = transform;
+        cardsContainer.style.transformOrigin = '0 0';
+        drawingCanvas.style.transform = transform;
+        drawingCanvas.style.transformOrigin = '0 0';
+        rafPending = false;
+      });
+    }
+
+    function updateZoomDisplay() {
+      document.getElementById('zoomLevel').textContent = Math.round(scale * 100) + '%';
+    }
+
+    function zoomTo(newScale, pivotX, pivotY) {
+      newScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newScale));
+      if (newScale === scale) return;
+
+      // If no pivot given, use center of viewport
+      if (pivotX === undefined) {
+        const vp = getViewport();
+        pivotX = vp.w / 2;
+        pivotY = vp.h / 2;
+      }
+
+      // Adjust offset to keep pivot point stable
+      const canvasX = (pivotX - offsetX) / scale;
+      const canvasY = (pivotY - offsetY) / scale;
+      scale = newScale;
+      offsetX = pivotX - canvasX * scale;
+      offsetY = pivotY - canvasY * scale;
+
+      updateZoomDisplay();
+      updateTransform();
+    }
+
+    // ── Panning ──
+    function startPan(e) {
+      if (currentTool !== 'hand') return;
+      isPanning = true;
+      canvasArea.classList.add('dragging');
+      panStartX = (e.clientX || e.touches?.[0]?.clientX) - offsetX;
+      panStartY = (e.clientY || e.touches?.[0]?.clientY) - offsetY;
+    }
+
+    function pan(e) {
+      if (!isPanning) return;
+      const x = e.clientX || e.touches?.[0]?.clientX;
+      const y = e.clientY || e.touches?.[0]?.clientY;
+      offsetX = x - panStartX;
+      offsetY = y - panStartY;
+      updateTransform();
+    }
+
+    function endPan() {
+      isPanning = false;
+      canvasArea.classList.remove('dragging');
+    }
+
+    // ── Drawing ──
+    function startDraw(e) {
+      if (currentTool !== 'pen') return;
+      isDrawing = true;
+      const rect = drawingCanvas.getBoundingClientRect();
+      const scaleRatio = drawingCanvas.width / rect.width;
+      lastX = ((e.clientX || e.touches?.[0]?.clientX) - rect.left) * scaleRatio;
+      lastY = ((e.clientY || e.touches?.[0]?.clientY) - rect.top) * scaleRatio;
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const rect = drawingCanvas.getBoundingClientRect();
+      const scaleRatio = drawingCanvas.width / rect.width;
+      const x = ((e.clientX || e.touches?.[0]?.clientX) - rect.left) * scaleRatio;
+      const y = ((e.clientY || e.touches?.[0]?.clientY) - rect.top) * scaleRatio;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(x, y);
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = lineWidth / scale; // consistent width at any zoom
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.globalAlpha = 0.7;
+      ctx.stroke();
+      lastX = x;
+      lastY = y;
+    }
+
+    function endDraw() {
+      isDrawing = false;
+      ctx.globalAlpha = 1;
+    }
+
+    // ── Canvas events ──
+    canvasArea.addEventListener('mousedown', (e) => {
+      if (currentTool === 'hand') startPan(e);
+      else startDraw(e);
+    });
+
+    canvasArea.addEventListener('mousemove', (e) => {
+      if (currentTool === 'hand') pan(e);
+      else draw(e);
+    });
+
+    canvasArea.addEventListener('mouseup', () => { endPan(); endDraw(); });
+    canvasArea.addEventListener('mouseleave', () => { endPan(); endDraw(); });
+
+    canvasArea.addEventListener('touchstart', (e) => {
+      if (currentTool === 'hand') startPan(e);
+      else startDraw(e);
+    }, { passive: true });
+
+    canvasArea.addEventListener('touchmove', (e) => {
+      if (currentTool === 'hand') pan(e);
+      else draw(e);
+    }, { passive: false });
+
+    canvasArea.addEventListener('touchend', () => { endPan(); endDraw(); });
+
+    // ── Ctrl+scroll to zoom ──
+    canvasArea.addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = -e.deltaY * 0.002;
+        const rect = canvasArea.getBoundingClientRect();
+        const pivotX = e.clientX - rect.left;
+        const pivotY = e.clientY - rect.top;
+        zoomTo(scale + delta * scale, pivotX, pivotY);
+      }
+    }, { passive: false });
+
+    // ── Tool switching ──
+    document.getElementById('handTool').addEventListener('click', () => {
+      currentTool = 'hand';
+      document.getElementById('handTool').classList.add('active');
+      document.getElementById('penTool').classList.remove('active');
+      canvasArea.classList.remove('drawing');
+      drawingCanvas.classList.remove('active');
+      showHint('Drag to explore');
+    });
+
+    document.getElementById('penTool').addEventListener('click', () => {
+      currentTool = 'pen';
+      document.getElementById('penTool').classList.add('active');
+      document.getElementById('handTool').classList.remove('active');
+      canvasArea.classList.add('drawing');
+      drawingCanvas.classList.add('active');
+      showHint('Draw anywhere!');
+    });
+
+    // ── Color buttons ──
+    document.querySelectorAll('.color-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        strokeColor = btn.dataset.color;
+      });
+    });
+
+    // ── Clear ──
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+      showHint('Canvas cleared!');
+    });
+
+    // ── Zoom controls ──
+    document.getElementById('zoomIn').addEventListener('click', () => {
+      zoomTo(scale + ZOOM_STEP);
+    });
+
+    document.getElementById('zoomOut').addEventListener('click', () => {
+      zoomTo(scale - ZOOM_STEP);
+    });
+
+    document.getElementById('zoomFit').addEventListener('click', () => {
+      scale = 1;
+      updateZoomDisplay();
+      recenter();
+    });
+
+    // ── Sidebar toggle ──
+    function toggleSidebar() {
+      sidebar.classList.toggle('collapsed');
+      if (window.innerWidth <= 768) {
+        sidebar.classList.toggle('mobile-open');
+      } else {
+        document.body.classList.toggle('sidebar-collapsed');
+      }
+      // Recenter after transition
+      setTimeout(recenter, 260);
+    }
+
+    document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+
+    // ── Layer click-to-pan ──
+    document.querySelectorAll('.layer-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const targetId = item.dataset.target;
+        const target = document.getElementById(targetId);
+        if (!target) return;
+
+        // Highlight active layer
+        document.querySelectorAll('.layer-item').forEach(l => l.classList.remove('active'));
+        item.classList.add('active');
+
+        // Get card position from its CSS (offsetTop/offsetLeft in the cards container)
+        const cardX = target.offsetLeft + target.offsetWidth / 2;
+        const cardY = target.offsetTop + target.offsetHeight / 2;
+
+        const vp = getViewport();
+        offsetX = vp.w / 2 - cardX * scale;
+        offsetY = vp.h / 2 - cardY * scale;
+
+        updateTransform();
+
+        // Close sidebar on mobile after navigating
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('mobile-open');
+        }
+      });
+    });
+
+    // ── Keyboard shortcuts ──
+    document.addEventListener('keydown', (e) => {
+      // Ignore if typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.key === 'h' || e.key === ' ') {
+        e.preventDefault();
+        document.getElementById('handTool').click();
+      } else if (e.key === 'p' || e.key === 'd') {
+        document.getElementById('penTool').click();
+      } else if (e.key === '\\') {
+        toggleSidebar();
+      } else if ((e.ctrlKey || e.metaKey) && e.key === '0') {
+        e.preventDefault();
+        scale = 1;
+        updateZoomDisplay();
+        recenter();
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === '=' || e.key === '+')) {
+        e.preventDefault();
+        zoomTo(scale + ZOOM_STEP);
+      } else if ((e.ctrlKey || e.metaKey) && e.key === '-') {
+        e.preventDefault();
+        zoomTo(scale - ZOOM_STEP);
+      }
+    });
+
+    // ── Hint ──
+    function showHint(text) {
+      hint.textContent = text;
+      hint.classList.add('visible');
+      setTimeout(() => hint.classList.remove('visible'), 1500);
+    }
+
+    setTimeout(() => showHint('Drag to explore, or draw!'), 600);
+  </script>
+</body>
+</html>
