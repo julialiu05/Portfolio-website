@@ -687,7 +687,7 @@
       </video>
     </div>
 
-    <h1 class="hero-title">Mapping the system of human innovation — together</h1>
+    <h1 class="hero-title">Mapping and Connecting Human Innovations Together</h1>
 
     <div class="metadata">
         <div class="meta-item">
@@ -721,6 +721,7 @@
         <a href="#core-flows">Core Flows</a>
         <a href="#research">Research</a>
         <a href="#decisions">Design Decisions</a>
+        <a href="#ai-features">AI Features</a>
         <a href="#outcome">Outcome</a>
       </div>
     </nav>
@@ -1207,6 +1208,59 @@
             <p style="font-size:11px;color:#999;margin:0;">Rankings, contribution tracking, interaction history.</p>
           </div>
         </div>
+
+        <!-- Row 5: Colorblind participant → Accessible node design -->
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <div style="flex:0 0 220px;background:#f4f4f2;border-radius:8px;padding:14px 16px;">
+            <p style="font-size:10px;color:#999;margin:0;">1 colorblind participant</p>
+            <p style="font-size:13px;font-weight:600;color:#1a1a1a;margin:2px 0 0;">Couldn't distinguish node categories by color alone</p>
+          </div>
+          <div style="flex:0 0 30px;text-align:center;color:#ccc;font-size:16px;">&rarr;</div>
+          <div style="flex:1;">
+            <div style="border-radius:10px;overflow:hidden;border:1px solid #e8e8e8;">
+              <img src="decision-design.png" style="width:100%;aspect-ratio:1;object-fit:cover;display:block;">
+            </div>
+            <p style="font-size:13px;font-weight:600;color:#1a1a1a;margin:8px 0 2px;">Accessible Visual System</p>
+            <p style="font-size:11px;color:#999;margin:0;">Accessible monochrome palette designed with differentiating shapes and labels.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── AI Features ── -->
+      <section class="section" id="ai-features">
+        <h4 class="section-label">AI Features</h4>
+        <h2 class="section-title">Designing for AI-native creation.</h2>
+
+        <p>As the tree grew, manually adding nodes became a bottleneck. I designed an AI Node Builder that lets users describe any technology in natural language and generates a complete node.</p>
+
+        <div style="margin-top:32px;margin-bottom:48px;">
+          <p style="font-size:20px;font-weight:600;color:#1a1a1a;margin-bottom:6px;padding-left:20px;text-indent:-20px;"><span style="display:inline-block;width:10px;height:10px;background:#999;border-radius:50%;margin-right:10px;vertical-align:middle;"></span>How might we use AI to lower the barrier to contributing knowledge?</p>
+          <p style="font-size:14px;color:#666;padding-left:20px;">The AI Node Builder takes a single prompt and generates a complete node. Every AI-generated node is flagged for human review before going live.</p>
+          <div class="media-block">
+            <div style="border-radius:12px;overflow:hidden;">
+              <video autoplay loop muted playsinline style="width:100%;display:block;border-radius:12px;">
+                <source src="techtree-ai-builder.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:24px;align-items:center;margin-bottom:48px;">
+          <div style="width:320px;height:320px;border-radius:12px;overflow:hidden;flex-shrink:0;">
+            <video autoplay loop muted playsinline style="width:100%;display:block;animation:ai-pan 8s ease-in-out infinite alternate;">
+              <source src="techtree-ai-detail.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div style="flex:1;padding:14px 18px;background:#f4f4f2;border-radius:8px;">
+            <p style="font-size:14px;color:#666;margin:0;"><span style="font-weight:600;color:#1a1a1a;">AI as co-creator, not replacement.</span> Users who found contributing intimidating could now start their ideas somewhere, with an AI generated assistance. All AI-generated content still goes through human review before publishing, keeping the community in control of what makes it onto the tree.</p>
+          </div>
+        </div>
+        <style>
+          @keyframes ai-pan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-40%); }
+          }
+        </style>
       </section>
 
       <!-- ── Impact & Reflection ── -->

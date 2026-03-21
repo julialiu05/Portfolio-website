@@ -1710,6 +1710,7 @@
     (function() {
       var textEl = document.getElementById('greetingText');
       if (!textEl) return;
+      window._greetingFullHTML = textEl.innerHTML.trim();
       window._greetingFullText = textEl.textContent.trim();
       textEl.textContent = '';
     })();

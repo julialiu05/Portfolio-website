@@ -149,7 +149,7 @@ export default async function handler(req, res) {
     ];
 
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6-20250514',
       max_tokens: 1024,
       system: `You are JuliaLLM, a friendly AI assistant on Julia Liu's portfolio website. You answer questions about Julia's work, skills, background, and projects.
 
