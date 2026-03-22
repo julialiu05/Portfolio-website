@@ -614,6 +614,16 @@
       100% { object-position: right; }
     }
 
+    @keyframes slow-zoom-a {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.15); }
+    }
+
+    @keyframes slow-zoom-b {
+      0% { transform: scale(1.05); }
+      100% { transform: scale(1.2); }
+    }
+
     /* ── Responsive ── */
     @media (max-width: 1080px) {
       .side-nav { display: none; }
@@ -704,7 +714,7 @@
         </div>
         <div class="meta-item">
           <div class="meta-label">Skills</div>
-          <div class="meta-value">Product Design, Systems Thinking, UX Research, Prototyping</div>
+          <div class="meta-value">Product Design, Systems Thinking, UX Research, Prototyping, Motion Design, Three.js, Blender</div>
         </div>
     </div>
   </div>
@@ -952,6 +962,48 @@
               <p style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:8px;">Key Takeaways</p>
               <p style="font-size:14px;color:#666;margin-bottom:6px;">The biggest signal: 5 out of 7 participants found navigation confusing and felt there was too much going on. Complexity was the top barrier to satisfaction, and lower-rated users consistently cited the same pain points.</p>
               <p style="font-size:13px;color:#999;font-style:italic;">"Great idea, has a lot of potential, needs a lot of work." - Biostatistician, AI researcher</p>
+            </div>
+          </div>
+        </details>
+
+        <!-- Phase 1.5: Testing & Other Ideas -->
+        <details class="research-dropdown">
+          <summary>Phase 1.5: Testing &amp; Other Ideas</summary>
+          <div class="dropdown-content">
+            <p style="font-size:14px;color:#666;margin-bottom:20px;">In attempts to solve the problem of clustered nodes and increase engagement with gamification, I brought in the idea of a game led by extensive motion graphics and effects, with information stored within a 3D world built in <strong>Three.js</strong> and <strong>Blender</strong>. Users could orbit, zoom in, and explore by moving a boat to sail to different landmarks, each representative of an era, to discover technologies.</p>
+
+            <!-- 3D World Screenshots -->
+            <div style="margin-bottom:24px;">
+              <p style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:12px;">Filter Effects Tested</p>
+              <div style="display:flex;flex-direction:column;gap:20px;">
+                <div style="background:#f4f4f2;border-radius:12px;padding:16px;">
+                  <div style="border-radius:10px;overflow:hidden;margin-bottom:10px;">
+                    <img src="tech-graph-3d-1.png" alt="3D world prototype with warm teal filter effect" style="width:100%;display:block;animation:slow-zoom-a 20s ease-in-out infinite alternate;">
+                  </div>
+                  <p style="font-size:13px;font-weight:600;color:#1a1a1a;margin:0 0 2px;">Filter A: Warm Teal</p>
+                  <p style="font-size:12px;color:#666;margin:0;">A warmer, saturated tone applied across the 3D world. Tested for visual warmth and approachability.</p>
+                </div>
+                <div style="background:#f4f4f2;border-radius:12px;padding:16px;">
+                  <div style="border-radius:10px;overflow:hidden;margin-bottom:10px;">
+                    <img src="tech-graph-3d-2.png" alt="3D world prototype with cool blue filter effect" style="width:100%;display:block;animation:slow-zoom-b 24s ease-in-out infinite alternate;">
+                  </div>
+                  <p style="font-size:13px;font-weight:600;color:#1a1a1a;margin:0 0 2px;">Filter B: Cool Blue</p>
+                  <p style="font-size:12px;color:#666;margin:0;">A cooler, more muted tone. Tested for contrast and readability. Both filters were ultimately scrapped due to accessibility concerns across different screens.</p>
+                </div>
+              </div>
+            </div>
+
+            <p style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:8px;">Why scrap it?</p>
+            <p style="font-size:14px;color:#666;margin-bottom:24px;">The 3D environment was visually striking, but it added friction instead of reducing it. Users spent time orienting themselves in the space rather than exploring content.</p>
+
+            <p style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:12px;">What carried over into the shipped product</p>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="padding:14px 18px;background:#f4f4f2;border-radius:8px;">
+                <p style="font-size:14px;color:#666;margin:0;"><span style="font-weight:600;color:#1a1a1a;">Spatial hierarchy &rarr; Timeline zoom levels.</span> The depth layers in the 3D world became the zoom-based progressive disclosure in the 2D platform.</p>
+              </div>
+              <div style="padding:14px 18px;background:#f4f4f2;border-radius:8px;">
+                <p style="font-size:14px;color:#666;margin:0;"><span style="font-weight:600;color:#1a1a1a;">Blender assets &rarr; Visual identity.</span> The low-poly material language, lighting, and texture work from Blender shaped the platform's overall aesthetic direction.</p>
+              </div>
             </div>
           </div>
         </details>
