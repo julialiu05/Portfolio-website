@@ -11596,4 +11596,36 @@
   .custom-cursor {
     display: none !important;
   }
+
+  /* Disable project card hover effects on touch devices */
+  .desktop-app.chatgpt-style .project-preview-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .desktop-app.chatgpt-style .project-preview-card:hover .stacking-window-preview {
+    transform: none !important;
+  }
+
+  .desktop-app.chatgpt-style .project-preview-card:hover .card-preview-footer {
+    opacity: unset !important;
+    transform: none !important;
+  }
+
+  .desktop-app.chatgpt-style .project-preview-card:hover .card-preview-arrow {
+    opacity: 0 !important;
+  }
+
+  .desktop-app.chatgpt-style .project-preview-card:hover .hover-scroll-preview {
+    opacity: 0 !important;
+  }
+
+  .desktop-app.chatgpt-style .project-preview-card:hover .card-gpt-user-msg,
+  .desktop-app.chatgpt-style .project-preview-card:hover .card-gpt-response {
+    opacity: unset !important;
+  }
+
+  .desktop-app.chatgpt-style .gpt-projects.hscroll-active .project-preview-card:hover {
+    transform: none !important;
+  }
 }
