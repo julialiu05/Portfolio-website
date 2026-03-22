@@ -551,6 +551,10 @@
               i++;
             } else {
               clearInterval(interval);
+              // Restore original HTML with formatting
+              if (window._greetingFullHTML) {
+                textEl.innerHTML = window._greetingFullHTML;
+              }
               showTypingThenProjects();
             }
           }, 20);
