@@ -2,30 +2,13 @@
    gravity.css — Hero greeting enlargement + (later) physics styles
    ========================================================================== */
 
-/* Track original chat-size styling so the enlargement can transition from it */
-.gpt-chat-msg.assistant .greet-bold,
-.gpt-chat-msg.assistant .greet-light {
-  display: inline;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  letter-spacing: inherit;
-  color: inherit;
-  transition:
-    font-size 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    letter-spacing 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    line-height 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    font-weight 900ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Enlarged state — applied to #chatAiGreeting after cards finish revealing */
-.gpt-chat-msg.assistant.greeting-enlarged .gpt-msg-text {
+/* Hero-size greeting — applied from the start (typewriter preserves span structure) */
+.gpt-chat-msg.assistant .gpt-msg-text {
   max-width: min(960px, 92vw);
-  transition: max-width 900ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.gpt-chat-msg.assistant.greeting-enlarged .greet-bold {
+.gpt-chat-msg.assistant .greet-bold {
+  display: inline;
   font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 56px;
   font-weight: 800;
@@ -34,7 +17,8 @@
   color: var(--clay-text, #1A1A1A);
 }
 
-.gpt-chat-msg.assistant.greeting-enlarged .greet-light {
+.gpt-chat-msg.assistant .greet-light {
+  display: inline;
   font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 24px;
   font-weight: 400;
@@ -45,32 +29,23 @@
 
 /* Tablet */
 @media (max-width: 1024px) {
-  .gpt-chat-msg.assistant.greeting-enlarged .greet-bold {
+  .gpt-chat-msg.assistant .greet-bold {
     font-size: 42px;
     letter-spacing: -0.03em;
   }
-  .gpt-chat-msg.assistant.greeting-enlarged .greet-light {
+  .gpt-chat-msg.assistant .greet-light {
     font-size: 20px;
   }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
-  .gpt-chat-msg.assistant.greeting-enlarged .greet-bold {
+  .gpt-chat-msg.assistant .greet-bold {
     font-size: 30px;
     letter-spacing: -0.025em;
   }
-  .gpt-chat-msg.assistant.greeting-enlarged .greet-light {
+  .gpt-chat-msg.assistant .greet-light {
     font-size: 17px;
-  }
-}
-
-/* Respect reduced motion — skip transition, apply end state instantly */
-@media (prefers-reduced-motion: reduce) {
-  .gpt-chat-msg.assistant .greet-bold,
-  .gpt-chat-msg.assistant .greet-light,
-  .gpt-chat-msg.assistant.greeting-enlarged .gpt-msg-text {
-    transition: none !important;
   }
 }
 

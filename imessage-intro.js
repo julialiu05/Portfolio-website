@@ -540,23 +540,46 @@
           greeting.style.transform = 'translateY(0)';
         }
 
-        // Typewriter streams the greeting text
+        // Typewriter — types into the existing span structure so CSS sizes
+        // (.greet-bold / .greet-light) apply from the very first character.
         var textEl = document.getElementById('greetingText');
-        if (textEl && window._greetingFullText) {
-          var fullText = window._greetingFullText;
-          var i = 0;
-          var interval = setInterval(function() {
-            if (i < fullText.length) {
-              textEl.textContent += fullText.charAt(i);
-              i++;
-            } else {
-              clearInterval(interval);
-              // Restore original HTML with formatting
-              if (window._greetingFullHTML) {
-                textEl.innerHTML = window._greetingFullHTML;
+        if (textEl && window._greetingFullHTML) {
+          // Restore the original span scaffold, then blank each text node so we
+          // can re-fill them one character at a time.
+          textEl.innerHTML = window._greetingFullHTML;
+          var segments = [];
+          (function collectSegments(container) {
+            for (var n = 0; n < container.childNodes.length; n++) {
+              var child = container.childNodes[n];
+              if (child.nodeType === Node.TEXT_NODE) {
+                if (child.textContent.length > 0) {
+                  segments.push({ node: child, text: child.textContent });
+                  child.textContent = '';
+                }
+              } else if (child.nodeType === Node.ELEMENT_NODE) {
+                var inner = child.firstChild;
+                if (inner && inner.nodeType === Node.TEXT_NODE) {
+                  segments.push({ node: inner, text: inner.textContent });
+                  inner.textContent = '';
+                }
               }
-              showTypingThenProjects();
             }
+          })(textEl);
+
+          var segIdx = 0;
+          var charIdx = 0;
+          var interval = setInterval(function() {
+            while (segIdx < segments.length && charIdx >= segments[segIdx].text.length) {
+              segIdx++;
+              charIdx = 0;
+            }
+            if (segIdx >= segments.length) {
+              clearInterval(interval);
+              showTypingThenProjects();
+              return;
+            }
+            segments[segIdx].node.textContent += segments[segIdx].text.charAt(charIdx);
+            charIdx++;
           }, 20);
         }
       }, 1800);
