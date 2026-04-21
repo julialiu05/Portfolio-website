@@ -10,10 +10,10 @@
 /* Custom wave — scales with font-size so it stays proportional across breakpoints */
 .hero-wave {
   display: inline-block;
-  height: 0.95em;
+  height: 1.5em;
   width: auto;
-  vertical-align: -0.18em;
-  margin: 0 0.05em;
+  vertical-align: -0.4em;
+  margin: 0 -0.05em 0 0.1em;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
@@ -33,10 +33,10 @@
 /* Custom sprout — gentle sway, pivots at the base of the stem */
 .hero-sprout {
   display: inline-block;
-  height: 1.05em;
+  height: 1.7em;
   width: auto;
-  vertical-align: -0.25em;
-  margin: 0 0.05em;
+  vertical-align: -0.5em;
+  margin: 0 -0.1em 0 0.1em;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
