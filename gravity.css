@@ -138,6 +138,18 @@
   color: var(--clay-text-secondary, #5A5A5A);
 }
 
+/* "Incoming @ TikTok" — the *present* state. Bolder weight, darker color
+   so it reads more active than the Berkeley education line. */
+.gpt-chat-msg.assistant .greet-now {
+  display: inline;
+  font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: var(--clay-text, #1A1A1A);
+}
+
 /* Tablet */
 @media (max-width: 1024px) {
   .gpt-chat-msg.assistant .greet-hello {
@@ -148,7 +160,8 @@
     font-size: 32px;
     letter-spacing: -0.02em;
   }
-  .gpt-chat-msg.assistant .greet-light {
+  .gpt-chat-msg.assistant .greet-light,
+  .gpt-chat-msg.assistant .greet-now {
     font-size: 18px;
   }
 }
@@ -163,7 +176,8 @@
     font-size: 24px;
     letter-spacing: -0.015em;
   }
-  .gpt-chat-msg.assistant .greet-light {
+  .gpt-chat-msg.assistant .greet-light,
+  .gpt-chat-msg.assistant .greet-now {
     font-size: 15px;
   }
 }

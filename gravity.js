@@ -144,12 +144,14 @@
     const helloEl = document.querySelector('.greet-hello');
     const boldEl = document.querySelector('.greet-bold');
     const lightEl = document.querySelector('.greet-light');
+    const nowEl = document.querySelector('.greet-now');
     if (!boldEl || !lightEl) return;
 
     const wordEls = [
       ...(helloEl ? wrapWordsIn(helloEl) : []),
       ...wrapWordsIn(boldEl),
       ...wrapWordsIn(lightEl),
+      ...(nowEl ? wrapWordsIn(nowEl) : []),
     ];
 
     // Also make the "Hello!" user-side bubble a physics body so it falls too.
