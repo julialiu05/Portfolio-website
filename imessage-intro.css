@@ -918,7 +918,7 @@
     /* Icon depth — add shadow to icon graphics for 3D perception */
     .desktop-app.chatgpt-style .gpt-plus-btn svg,
     .desktop-app.chatgpt-style .gpt-mic-btn svg {
-      filter: none;
+      filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2)) drop-shadow(-1px -1px 2px rgba(255, 255, 255, 0.5));
       transition: filter 0.3s ease;
     }
 
@@ -1208,8 +1208,8 @@
     .desktop-app.chatgpt-style .gpt-input-bar {
       display: flex;
       align-items: center;
-      background-color: #FFFFFF;
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      background-color: #080808;
+      border: 0;
       border-radius: var(--clay-radius-pill);
       padding: 14px 28px;
       gap: 8px;
@@ -1217,23 +1217,78 @@
       overflow: hidden;
       width: 100%;
       max-width: 860px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.04);
-      transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+      box-shadow:
+        inset 0 0.3rem 0.9rem rgba(255, 255, 255, 0.3),
+        inset 0 -0.1rem 0.3rem rgba(0, 0, 0, 0.7),
+        inset 0 -0.4rem 0.9rem rgba(255, 255, 255, 0.5),
+        0 3rem 3rem rgba(0, 0, 0, 0.3),
+        0 1rem 1rem -0.6rem rgba(0, 0, 0, 0.8);
+      transition: all 0.2s ease;
       cursor: pointer;
     }
 
-    .desktop-app.chatgpt-style .gpt-input-bar::before,
+    /* Glossy shine — upper reflection */
+    .desktop-app.chatgpt-style .gpt-input-bar::before {
+      content: "";
+      position: absolute;
+      left: -15%;
+      right: -15%;
+      bottom: 25%;
+      top: -100%;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.12);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Glossy shine — top edge highlight */
     .desktop-app.chatgpt-style .gpt-input-bar::after {
-      display: none;
+      content: "";
+      position: absolute;
+      left: 2%;
+      right: 2%;
+      top: 10%;
+      bottom: 30%;
+      border-radius: 100px;
+      box-shadow: inset 0 10px 8px -10px rgba(255, 255, 255, 0.8);
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(0, 0, 0, 0) 50%,
+        rgba(0, 0, 0, 0) 100%
+      );
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 1;
     }
 
     .desktop-app.chatgpt-style .gpt-input-bar:hover {
-      border-color: rgba(0, 0, 0, 0.2);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06), 0 8px 28px rgba(0, 0, 0, 0.06);
+      box-shadow:
+        inset 0 0.3rem 0.5rem rgba(255, 255, 255, 0.4),
+        inset 0 -0.1rem 0.3rem rgba(0, 0, 0, 0.7),
+        inset 0 -0.4rem 0.9rem rgba(255, 255, 255, 0.7),
+        0 3rem 3rem rgba(0, 0, 0, 0.3),
+        0 1rem 1rem -0.6rem rgba(0, 0, 0, 0.8);
+    }
+
+    .desktop-app.chatgpt-style .gpt-input-bar:hover::before {
+      transform: translateY(-5%);
+    }
+
+    .desktop-app.chatgpt-style .gpt-input-bar:hover::after {
+      opacity: 0.4;
+      transform: translateY(5%);
     }
 
     .desktop-app.chatgpt-style .gpt-input-bar:active {
-      transform: translateY(1px);
+      transform: translateY(4px);
+      box-shadow:
+        inset 0 0.3rem 0.5rem rgba(255, 255, 255, 0.5),
+        inset 0 -0.1rem 0.3rem rgba(0, 0, 0, 0.8),
+        inset 0 -0.4rem 0.9rem rgba(255, 255, 255, 0.4),
+        0 3rem 3rem rgba(0, 0, 0, 0.3),
+        0 1rem 1rem -0.6rem rgba(0, 0, 0, 0.8);
     }
 
     /* Plus button (left) */
@@ -1242,7 +1297,7 @@
       height: 36px;
       background: transparent;
       border: 0;
-      color: rgba(0, 0, 0, 0.45);
+      color: rgba(255, 255, 255, 0.5);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1253,7 +1308,7 @@
     }
 
     .desktop-app.chatgpt-style .gpt-plus-btn:hover {
-      color: rgba(0, 0, 0, 0.8);
+      color: rgba(255, 255, 255, 0.8);
     }
 
     /* Mic button */
@@ -1262,7 +1317,7 @@
       height: 36px;
       background: transparent;
       border: 0;
-      color: rgba(0, 0, 0, 0.45);
+      color: rgba(255, 255, 255, 0.5);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1273,7 +1328,7 @@
     }
 
     .desktop-app.chatgpt-style .gpt-mic-btn:hover {
-      color: rgba(0, 0, 0, 0.8);
+      color: rgba(255, 255, 255, 0.8);
     }
 
     /* Voice/waveform button */
@@ -1282,7 +1337,7 @@
       height: 36px;
       background: transparent;
       border: 0;
-      color: rgba(0, 0, 0, 0.45);
+      color: rgba(255, 255, 255, 0.5);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1293,7 +1348,7 @@
     }
 
     .desktop-app.chatgpt-style .gpt-voice-btn:hover {
-      color: rgba(0, 0, 0, 0.8);
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .desktop-app.chatgpt-style .gpt-input-field {
@@ -1302,7 +1357,7 @@
       background: transparent;
       font-size: 15px;
       font-family: var(--gpt-font);
-      color: rgba(0, 0, 0, 0.8);
+      color: rgba(255, 255, 255, 0.7);
       outline: none;
       padding: 6px 0;
       pointer-events: auto;
@@ -1312,7 +1367,7 @@
     }
 
     .desktop-app.chatgpt-style .gpt-input-field::placeholder {
-      color: rgba(0, 0, 0, 0.4);
+      color: rgba(255, 255, 255, 0.4);
       opacity: 1;
     }
 
@@ -4095,9 +4150,8 @@
 
     .gpt-chat-msg.assistant .gpt-msg-text {
       color: var(--clay-text);
-      font-size: 22px;
-      line-height: 1.55;
-      letter-spacing: -0.01em;
+      font-size: 17px;
+      line-height: 1.6;
       font-family: var(--gpt-font);
       max-width: 640px;
       white-space: pre-wrap;
@@ -4243,7 +4297,7 @@
       .gpt-chat-msg.user .gpt-msg-bubble,
       .gpt-chat-msg.assistant .gpt-msg-text {
         max-width: 90%;
-        font-size: 18px;
+        font-size: 15px;
       }
     }
 
