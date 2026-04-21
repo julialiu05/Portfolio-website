@@ -75,6 +75,60 @@
 }
 
 /* ==========================================================================
+   Status line — "Currently @ TikTok"
+   ========================================================================== */
+
+.greet-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  font-family: 'Geist Mono', 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--clay-text-secondary, #5A5A5A);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1) 400ms,
+              transform 500ms cubic-bezier(0.22, 1, 0.36, 1) 400ms;
+}
+
+.gpt-chat-msg.assistant.greeting-enlarged .greet-status {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.greet-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22C55E;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  animation: greet-status-pulse 2.4s ease-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes greet-status-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+  70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.greet-status-text {
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .greet-status { transition: none; opacity: 1; transform: none; }
+  .greet-status-dot { animation: none; }
+}
+
+/* ==========================================================================
    Physics state (Part B — scaffolded, not yet active)
    ========================================================================== */
 
