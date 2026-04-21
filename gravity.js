@@ -243,13 +243,12 @@
   function addRigWalls(M, world) {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    // Floor — well below the viewport so words land visibly.
-    const floor = M.Bodies.rectangle(w / 2, h + 60, w * 3, 120, { isStatic: true });
-    const leftWall = M.Bodies.rectangle(-100, h / 2, 200, h * 4, { isStatic: true });
-    const rightWall = M.Bodies.rectangle(w + 100, h / 2, 200, h * 4, { isStatic: true });
-    // Ceiling — generous so words can fly up when flung.
-    const ceiling = M.Bodies.rectangle(w / 2, -h * 1.5, w * 3, 200, { isStatic: true });
-    M.World.add(world, [floor, leftWall, rightWall, ceiling]);
+    // Floor — pushed well below the viewport so words can fall out of sight before stopping.
+    const floor = M.Bodies.rectangle(w / 2, h + 600, w * 6, 120, { isStatic: true });
+    // Ceiling — generous so flung words don't fly to infinity, but still off-screen.
+    const ceiling = M.Bodies.rectangle(w / 2, -h * 1.5, w * 6, 200, { isStatic: true });
+    // NO side walls — words can drift/fall off the left and right edges of the viewport.
+    M.World.add(world, [floor, ceiling]);
   }
 
   function onWindowResize() {
