@@ -51,8 +51,27 @@
   50% { transform: rotate(3deg); }
 }
 
+/* Custom bear — inline with the smaller subtitle text, subtle idle bob */
+.hero-bear {
+  display: inline-block;
+  height: 1.4em;
+  width: auto;
+  vertical-align: -0.25em;
+  margin: 0 -0.05em 0 0.1em;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  animation: hero-bear-bob 5s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+
+@keyframes hero-bear-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-0.04em) rotate(-2deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hero-wave, .hero-sprout { animation: none; }
+  .hero-wave, .hero-sprout, .hero-bear { animation: none; }
 }
 
 .gpt-chat-msg.assistant .greet-bold {
