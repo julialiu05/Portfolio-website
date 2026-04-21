@@ -32,9 +32,9 @@
   animation: hero-wave-tilt 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
-/* Scale the wave larger inside the hero greeting. */
+/* Within the chat-sized greeting, wave matches default 1.1em height. */
 .greet-hello .hero-wave {
-  height: 1.4em;
+  height: 1.15em;
 }
 
 @keyframes hero-wave-tilt {
@@ -107,78 +107,66 @@
   .hero-wave, .hero-sprout, .hero-bear, .hero-tiktok { animation: none; }
 }
 
-/* Hero hierarchy: greeting is biggest, bio statement is medium, meta is small. */
+/* Hero: "Hello" is the only display-sized line. Everything else is the same
+   size (LLM-output feel), with weight/color providing the small variation. */
 .gpt-chat-msg.assistant .greet-hello {
   display: inline;
   font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 88px;
+  font-size: 64px;
   font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.04em;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   color: var(--clay-text, #1A1A1A);
 }
 
-.gpt-chat-msg.assistant .greet-bold {
-  display: inline;
-  font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 42px;
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-  color: var(--clay-text, #1A1A1A);
-}
-
-.gpt-chat-msg.assistant .greet-light {
-  display: inline;
-  font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 22px;
-  font-weight: 400;
-  line-height: 1.4;
-  letter-spacing: -0.015em;
-  color: var(--clay-text-secondary, #5A5A5A);
-}
-
-/* "Incoming @ TikTok" — the *present* state. Bolder weight, darker color
-   so it reads more active than the Berkeley education line. */
+.gpt-chat-msg.assistant .greet-bold,
+.gpt-chat-msg.assistant .greet-light,
 .gpt-chat-msg.assistant .greet-now {
   display: inline;
   font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 22px;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+
+.gpt-chat-msg.assistant .greet-bold {
+  font-weight: 700;
+  color: var(--clay-text, #1A1A1A);
+}
+
+.gpt-chat-msg.assistant .greet-light {
+  font-weight: 400;
+  color: var(--clay-text-secondary, #5A5A5A);
+}
+
+.gpt-chat-msg.assistant .greet-now {
   font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: -0.015em;
   color: var(--clay-text, #1A1A1A);
 }
 
 /* Tablet */
 @media (max-width: 1024px) {
   .gpt-chat-msg.assistant .greet-hello {
-    font-size: 64px;
-    letter-spacing: -0.035em;
+    font-size: 52px;
+    letter-spacing: -0.03em;
   }
-  .gpt-chat-msg.assistant .greet-bold {
-    font-size: 32px;
-    letter-spacing: -0.02em;
-  }
+  .gpt-chat-msg.assistant .greet-bold,
   .gpt-chat-msg.assistant .greet-light,
   .gpt-chat-msg.assistant .greet-now {
-    font-size: 18px;
+    font-size: 19px;
   }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
   .gpt-chat-msg.assistant .greet-hello {
-    font-size: 46px;
-    letter-spacing: -0.03em;
+    font-size: 38px;
+    letter-spacing: -0.025em;
   }
-  .gpt-chat-msg.assistant .greet-bold {
-    font-size: 24px;
-    letter-spacing: -0.015em;
-  }
+  .gpt-chat-msg.assistant .greet-bold,
   .gpt-chat-msg.assistant .greet-light,
   .gpt-chat-msg.assistant .greet-now {
-    font-size: 15px;
+    font-size: 17px;
   }
 }
 
