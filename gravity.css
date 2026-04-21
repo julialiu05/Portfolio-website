@@ -241,3 +241,19 @@
 .greeting-word:active {
   cursor: grabbing;
 }
+
+/* While physics is active, strip overflow-clipping from the hero's ancestors
+   so words can fall off the viewport edges visibly. */
+body.physics-active .desktop-app,
+body.physics-active .desktop-app.chatgpt-style,
+body.physics-active .gpt-main,
+body.physics-active .gpt-center,
+body.physics-active .chat-thread,
+body.physics-active .gpt-chat-msg,
+body.physics-active .gpt-msg-text,
+body.physics-active #chatUserHello,
+body.physics-active #chatAiGreeting,
+body.physics-active #chatAiProjects,
+body.physics-active #chatThread {
+  overflow: visible !important;
+}

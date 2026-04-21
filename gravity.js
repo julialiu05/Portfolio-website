@@ -277,9 +277,8 @@
     if (!engine || physicsActive) return;
     physicsActive = true;
 
-    // Suspend the continuous wave animation so it doesn't fight physics transforms.
-    // (The wave img still has its own internal rotation animation via CSS — fine
-    // since we transform the wrapper, not the img.)
+    // Remove overflow: hidden from ancestors so words can fall off the viewport.
+    document.body.classList.add('physics-active');
 
     wordRecords.forEach((wr) => {
       if (!wr.body) return;
@@ -372,6 +371,8 @@
         });
         resetting = false;
         physicsActive = false;
+        // Restore overflow-clipping on ancestors.
+        document.body.classList.remove('physics-active');
         // Resume the idle tick (cheap — bodies are static, no movement).
         tick();
       }
