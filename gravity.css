@@ -7,19 +7,20 @@
   max-width: min(960px, 92vw);
 }
 
-/* Custom wave — bottom-aligned with text baseline, tight spacing */
+/* Hero emoji images — sized to match the cap-height of the characters they sit next to.
+   Heights stay close to 1em so the line box doesn't stretch significantly. */
+
 .hero-wave {
   display: inline-block;
-  height: 1.5em;
+  height: 1.1em;
   width: auto;
-  /* PNG has ~20% transparent bottom padding; shift down to drop subject-bottom to baseline */
-  vertical-align: -0.3em;
-  margin: 0 -0.1em 0 0;
+  vertical-align: -0.22em;
+  margin: 0 0.04em;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
-  animation: hero-wave-tilt 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   transform-origin: 70% 90%;
+  animation: hero-wave-tilt 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
 @keyframes hero-wave-tilt {
@@ -31,19 +32,17 @@
   50% { transform: rotate(4deg); }
 }
 
-/* Custom sprout — bottom-aligned with text baseline, tight spacing */
 .hero-sprout {
   display: inline-block;
-  height: 1.7em;
+  height: 1.1em;
   width: auto;
-  /* Sprout PNG has minimal bottom padding; small shift to align stem base with baseline */
-  vertical-align: -0.1em;
-  margin: 0 -0.1em 0 0;
+  vertical-align: -0.15em;
+  margin: 0 0.04em;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
-  animation: hero-sprout-sway 4.2s ease-in-out infinite;
   transform-origin: 50% 100%;
+  animation: hero-sprout-sway 4.2s ease-in-out infinite;
 }
 
 @keyframes hero-sprout-sway {
@@ -51,18 +50,17 @@
   50% { transform: rotate(3deg); }
 }
 
-/* Custom bear — inline with the smaller subtitle text, subtle idle bob */
 .hero-bear {
   display: inline-block;
-  height: 1.4em;
+  height: 1.1em;
   width: auto;
-  vertical-align: -0.25em;
-  margin: 0 -0.05em 0 0.1em;
+  vertical-align: -0.22em;
+  margin: 0 0.04em;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
+  transform-origin: 50% 85%;
   animation: hero-bear-bob 5s ease-in-out infinite;
-  transform-origin: 50% 90%;
 }
 
 @keyframes hero-bear-bob {
