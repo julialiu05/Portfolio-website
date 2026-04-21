@@ -213,6 +213,13 @@
       el.addEventListener('touchstart', onWordDown, { passive: true });
     });
 
+    // "Hello!" chat bubble at top-right also triggers the fall.
+    const helloBubble = document.getElementById('chatUserHello');
+    if (helloBubble) {
+      helloBubble.style.cursor = 'pointer';
+      helloBubble.addEventListener('click', onWordDown);
+    }
+
     // Project card hover → reset.
     document.querySelectorAll('.project-preview-card').forEach((card) => {
       card.addEventListener('mouseenter', resetPhysics);
