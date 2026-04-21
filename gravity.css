@@ -32,6 +32,12 @@
   animation: hero-wave-tilt 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
+/* The wave sits inside .greet-hello (88px), where 1.1em becomes very large.
+   Shrink it a bit so it doesn't dominate the word. */
+.greet-hello .hero-wave {
+  height: 0.85em;
+}
+
 @keyframes hero-wave-tilt {
   0%, 60%, 100% { transform: rotate(0deg); }
   10% { transform: rotate(14deg); }
@@ -102,20 +108,31 @@
   .hero-wave, .hero-sprout, .hero-bear, .hero-tiktok { animation: none; }
 }
 
+/* Hero hierarchy: greeting is biggest, bio statement is medium, meta is small. */
+.gpt-chat-msg.assistant .greet-hello {
+  display: inline;
+  font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 88px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--clay-text, #1A1A1A);
+}
+
 .gpt-chat-msg.assistant .greet-bold {
   display: inline;
   font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 56px;
+  font-size: 42px;
   font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
   color: var(--clay-text, #1A1A1A);
 }
 
 .gpt-chat-msg.assistant .greet-light {
   display: inline;
   font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: -0.015em;
@@ -124,23 +141,31 @@
 
 /* Tablet */
 @media (max-width: 1024px) {
+  .gpt-chat-msg.assistant .greet-hello {
+    font-size: 64px;
+    letter-spacing: -0.035em;
+  }
   .gpt-chat-msg.assistant .greet-bold {
-    font-size: 42px;
-    letter-spacing: -0.03em;
+    font-size: 32px;
+    letter-spacing: -0.02em;
   }
   .gpt-chat-msg.assistant .greet-light {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
+  .gpt-chat-msg.assistant .greet-hello {
+    font-size: 46px;
+    letter-spacing: -0.03em;
+  }
   .gpt-chat-msg.assistant .greet-bold {
-    font-size: 30px;
-    letter-spacing: -0.025em;
+    font-size: 24px;
+    letter-spacing: -0.015em;
   }
   .gpt-chat-msg.assistant .greet-light {
-    font-size: 17px;
+    font-size: 15px;
   }
 }
 

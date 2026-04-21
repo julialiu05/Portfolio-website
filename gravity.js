@@ -141,14 +141,24 @@
     physicsReady = true;
 
     const M = window.Matter;
+    const helloEl = document.querySelector('.greet-hello');
     const boldEl = document.querySelector('.greet-bold');
     const lightEl = document.querySelector('.greet-light');
     if (!boldEl || !lightEl) return;
 
     const wordEls = [
+      ...(helloEl ? wrapWordsIn(helloEl) : []),
       ...wrapWordsIn(boldEl),
       ...wrapWordsIn(lightEl),
     ];
+
+    // Also make the "Hello!" user-side bubble a physics body so it falls too.
+    const helloBubble = document.querySelector('#chatUserHello .gpt-msg-bubble');
+    if (helloBubble) {
+      helloBubble.classList.add('greeting-word');
+      wordEls.push(helloBubble);
+    }
+
     if (!wordEls.length) return;
 
     // Snapshot original center positions & sizes BEFORE doing anything else.
@@ -206,19 +216,12 @@
     });
     M.World.add(world, mouseConstraint);
 
-    // Word mousedown → activate physics (once).
+    // Word (and Hello-bubble) mousedown → activate physics (once).
     wordEls.forEach((el) => {
       el.style.cursor = 'grab';
       el.addEventListener('mousedown', onWordDown);
       el.addEventListener('touchstart', onWordDown, { passive: true });
     });
-
-    // "Hello!" chat bubble at top-right also triggers the fall.
-    const helloBubble = document.getElementById('chatUserHello');
-    if (helloBubble) {
-      helloBubble.style.cursor = 'pointer';
-      helloBubble.addEventListener('click', onWordDown);
-    }
 
     // Project card hover → reset.
     document.querySelectorAll('.project-preview-card').forEach((card) => {
