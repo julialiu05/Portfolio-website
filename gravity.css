@@ -7,6 +7,33 @@
   max-width: min(960px, 92vw);
 }
 
+/* Custom wave — scales with font-size so it stays proportional across breakpoints */
+.hero-wave {
+  display: inline-block;
+  height: 0.95em;
+  width: auto;
+  vertical-align: -0.18em;
+  margin: 0 0.05em;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  animation: hero-wave-tilt 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  transform-origin: 70% 90%;
+}
+
+@keyframes hero-wave-tilt {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-10deg); }
+  30% { transform: rotate(12deg); }
+  40% { transform: rotate(-6deg); }
+  50% { transform: rotate(4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-wave { animation: none; }
+}
+
 .gpt-chat-msg.assistant .greet-bold {
   display: inline;
   font-family: 'Supreme', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
