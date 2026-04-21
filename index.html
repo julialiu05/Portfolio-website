@@ -9,8 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=supreme@400,500,700,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="imessage-intro.css?v=24">
+  <link rel="stylesheet" href="imessage-intro.css?v=25">
+  <link rel="stylesheet" href="gravity.css?v=1">
 
 </head>
 <body>
@@ -499,9 +501,9 @@
 
           <!-- AI greeting message -->
           <div class="gpt-chat-msg assistant" id="chatAiGreeting">
-            <div class="gpt-msg-text" id="greetingText"><span style="font-weight:800;">Hello 👋
+            <div class="gpt-msg-text" id="greetingText"><span class="greet-bold" style="font-weight:800;">Hello 👋
 Julia is a designer working between the fields of creative technology, prototyping, and making design accessible to those around her ✨</span>
-She is studying art, data science, and the design certificate @ UC Berkeley 🐻</div>
+<span class="greet-light">She is studying art, data science, and the design certificate @ UC Berkeley 🐻</span></div>
           </div>
 
           <!-- Typing indicator (shown before project cards) -->
@@ -1365,7 +1367,8 @@ She is studying art, data science, and the design certificate @ UC Berkeley 🐻
     </div>
   </div>
 
-  <script src="imessage-intro.js?v=14"></script>
+  <script src="imessage-intro.js?v=15"></script>
+  <script src="gravity.js?v=1" defer></script>
   <script>
     // Chat thread entrance animation is handled in imessage-intro.js
 

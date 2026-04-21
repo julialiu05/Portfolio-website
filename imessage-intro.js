@@ -595,6 +595,13 @@
               card.style.transform = 'translateY(0)';
             }, i * 100);
           });
+
+          // Signal to gravity.js that the greeting + cards have finished their entrance.
+          // Delay matches the last card's stagger + its 450ms transition.
+          var lastCardFinish = cards.length * 100 + 450;
+          setTimeout(function() {
+            window.dispatchEvent(new CustomEvent('greetingRevealed'));
+          }, lastCardFinish);
         }, 800);
       }
     }
