@@ -30,8 +30,27 @@
   50% { transform: rotate(4deg); }
 }
 
+/* Custom sprout — gentle sway, pivots at the base of the stem */
+.hero-sprout {
+  display: inline-block;
+  height: 1.05em;
+  width: auto;
+  vertical-align: -0.25em;
+  margin: 0 0.05em;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  animation: hero-sprout-sway 4.2s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+@keyframes hero-sprout-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hero-wave { animation: none; }
+  .hero-wave, .hero-sprout { animation: none; }
 }
 
 .gpt-chat-msg.assistant .greet-bold {
