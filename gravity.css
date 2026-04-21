@@ -10,12 +10,48 @@
 /* Hero emoji images — sized to match the cap-height of the characters they sit next to.
    Heights stay close to 1em so the line box doesn't stretch significantly. */
 
+/* Wrapper lets us draw motion-signal arcs around the hand via pseudo-elements */
+.hero-wave-wrap {
+  display: inline-block;
+  position: relative;
+  vertical-align: -0.22em;
+  margin: 0 0.04em;
+  line-height: 1;
+}
+
+.hero-wave-wrap::before,
+.hero-wave-wrap::after {
+  content: '';
+  position: absolute;
+  top: 18%;
+  width: 0.32em;
+  height: 0.55em;
+  background: no-repeat center/contain url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 40' fill='none' stroke='%23222' stroke-opacity='0.55' stroke-width='3.5' stroke-linecap='round'><path d='M5,10 Q16,20 5,30'/><path d='M11,14 Q18,20 11,26'/></svg>");
+  opacity: 0;
+  pointer-events: none;
+  animation: hero-wave-signals 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.hero-wave-wrap::before {
+  left: -0.42em;
+  transform: scaleX(-1);
+}
+
+.hero-wave-wrap::after {
+  right: -0.42em;
+}
+
+@keyframes hero-wave-signals {
+  0%, 100% { opacity: 0.2; }
+  25%, 55% { opacity: 0.7; }
+}
+
 .hero-wave {
   display: inline-block;
   height: 1.1em;
   width: auto;
-  vertical-align: -0.22em;
-  margin: 0 0.04em;
+  vertical-align: baseline;
+  margin: 0;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
