@@ -32,10 +32,9 @@
   animation: hero-wave-tilt 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
-/* The wave sits inside .greet-hello (88px), where 1.1em becomes very large.
-   Shrink it a bit so it doesn't dominate the word. */
+/* Scale the wave larger inside the hero greeting. */
 .greet-hello .hero-wave {
-  height: 0.85em;
+  height: 1.4em;
 }
 
 @keyframes hero-wave-tilt {
